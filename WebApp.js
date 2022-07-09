@@ -1,19 +1,13 @@
-import React, { useState } from "react";
-import {
-  webViewRender,
-  emit,
-  useNativeMessage,
-} from "react-native-react-bridge/lib/web";
+import React from "react";
+import { webViewRender } from "react-native-react-bridge/lib/web";
+import App from './src/App';
 
 import "./example.css";
 import image from "./logo.png";
 
 const Root = () => {
   return (
-    <div className="app">
-      <img src={image} />
-      <h1>SIA Watermarking App</h1>
-    </div>
+    <App />
   );
 };
 
