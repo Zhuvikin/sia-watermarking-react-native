@@ -4,6 +4,7 @@ stages:
 
 variables:
   PUBLIC_URL: /sia-watermarking
+  GIT_SUBMODULE_STRATEGY: recursive
 
 cache:
   paths:
