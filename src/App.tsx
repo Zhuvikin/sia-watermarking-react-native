@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import logo from './logo.png';
 import './App.css';
-import createModule from "./add.mjs";
+import createModule from "./lib/add/add.mjs";
 
 function App() {
   const [add, setAdd] : [any, any] = useState();

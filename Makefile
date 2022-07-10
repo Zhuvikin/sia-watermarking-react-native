@@ -1,5 +1,5 @@
-src/add.mjs: src/add.c
-	emcc --no-entry src/add.c -o src/add.mjs  \
+src/lib/add/add.mjs: src/lib/add/add.c
+	emcc --no-entry src/lib/add/add.c -o src/lib/add/add.mjs  \
 	  -s ENVIRONMENT='web'  \
 	  -s SINGLE_FILE=1  \
 	  -s EXPORT_NAME='createModule'  \
