@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import logo from './logo.png';
 import './App.css';
-import createModule from "./lib/add/add.mjs";
+import createAddModule from "./lib/add/add.mjs";
 
 function App() {
   const [add, setAdd] : [any, any] = useState();
 
   useEffect(
     () => {
-      createModule().then((Module : any) => {
+      createAddModule().then((Module : any) => {
         setAdd(() => Module.cwrap("add", "number", ["number", "number"]));
       });
     },
