@@ -2,31 +2,40 @@ import React, { useEffect, useState } from 'react';
 import logo from './logo.png';
 import './App.css';
 import createGSLModule from "./lib/gsl/gsl.mjs";
+import { ImageMagick, initImageMagick } from "./lib/imagemagick";
+import { GSL, initGSL } from "./lib/gsl";
 
 function App() {
-  const [besselJ0, setBesselJ0] : [any, any] = useState();
+  const [gslModule, setGSLModule] : [GSL, React.Dispatch<React.SetStateAction<GSL>>] = useState();
+  const [imageMagickModule, setImageMagickModule] : [ImageMagick, React.Dispatch<React.SetStateAction<ImageMagick>>] = useState();
 
   useEffect(
     () => {
-      createGSLModule().then((Module : any) => {
-        setBesselJ0(() => Module.cwrap("_gsl_sf_bessel_J0", "number", ["number", "number"]));
+      initImageMagick().then((Module : ImageMagick) => {
+        setImageMagickModule(() => Module);
+      });
+      initGSL().then((Module : GSL) => {
+        setGSLModule(() => Module);
       });
     },
     []
   );
 
-  if (!besselJ0) {
+  if (!gslModule || !imageMagickModule) {
     return (
       <div className="App">Loading webassembly...</div>
     )
   }
+
+  const numbers = [2.3, 4.2, 6.8, 8.9];
 
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <h1>Watermarking</h1>
-        <div>J0(5) = {besselJ0(5)}</div>
+        <div>J0(5) = {gslModule.besselJ0(5)}</div>
+        <div>2 * {numbers.join(', ')} = {imageMagickModule.doubleNumbers(numbers).join(', ')}</div>
       </header>
     </div>
   );
