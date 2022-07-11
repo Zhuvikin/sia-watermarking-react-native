@@ -15,7 +15,8 @@ build:
   stage: build
   before_script:
   - node -v
-  - apt-get update && apt-get -y install autoconf libtool
+  - apt-get update && apt-get -y install autoconf libtool nodejs
+  - node -v
   - npm install
   - make
   script:
