@@ -1,3 +1,6 @@
 [submodule "src/lib/gsl/source"]
 	path = src/lib/gsl/source
 	url = git://git.savannah.gnu.org/gsl.git
+[submodule "src/lib/imagemagick/source"]
+	path = src/lib/imagemagick/source
+	url = https://github.com/ImageMagick/ImageMagick.git
