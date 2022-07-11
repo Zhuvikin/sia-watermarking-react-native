@@ -1,7 +1,6 @@
 src/lib/math/math.mjs: src/lib/gsl/source/.libs/libgsl.a
 	emcc --no-entry \
-	  src/lib/gsl/source/specfunc/*.o \
-	  src/lib/gsl/source/err/*.o \
+	  src/lib/gsl/source/**/*.o \
 	  --bind src/lib/math/math.c \
 	  -o src/lib/math/math.mjs \
 	  -s ENVIRONMENT='web' \
