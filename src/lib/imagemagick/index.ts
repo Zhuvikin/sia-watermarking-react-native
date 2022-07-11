@@ -1,4 +1,4 @@
-import createImageMagickModule from "./imagemagick.mjs";
+import createImageMagickModule from "./imagemagick.js";
 
 export type ImageMagick = {
     module: any;
