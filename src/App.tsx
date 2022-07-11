@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import logo from './logo.png';
 import './App.css';
-import createGSLModule from "./lib/gsl/gsl.mjs";
 import { ImageMagick, initImageMagick } from "./lib/imagemagick";
 import { GSL, initGSL } from "./lib/gsl";
 
@@ -27,7 +26,7 @@ function App() {
     )
   }
 
-  const numbers = [2.3, 4.2, 6.8, 8.9];
+  const numbers = [2.3, 4.2, 3.14];
 
   return (
     <div className="App">

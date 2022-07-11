@@ -12,15 +12,15 @@ export const initImageMagick = async (): Promise<ImageMagick> => {
     return new Promise<ImageMagick>((resolve, reject) => {
         resolve({
             module,
-            doubleNumbers: (arr : [number, number, number, number]) => {
+            doubleNumbers: (arr : number[]) => {
                 var v1 = new Float64Array(arr);
                 var uarray = new Uint8Array(v1.buffer);
 
                 var ptr = module._malloc(v1.byteLength);
-                doubleNumbers(uarray, ptr);
+                doubleNumbers(uarray, ptr, arr.length);
                 
-                const result = new Float64Array(arr);
-                for (var i=0; i<v1.length; i++) {
+                const result = new Float64Array(arr.length);
+                for (var i=0; i<arr.length; i++) {
                     result[i] = module.getValue(ptr+i*v1.BYTES_PER_ELEMENT, 'double');
                 }
                 return result;
