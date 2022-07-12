@@ -1,4 +1,4 @@
-src/lib/imagemagick/imagemagick.mjs: src/lib/imagemagick/imagemagick.c
+src/lib/imagemagick/imagemagick.mjs: src/lib/gsl/gsl.mjs
 	emcc --no-entry src/lib/imagemagick/imagemagick.c -o src/lib/imagemagick/imagemagick.mjs \
 	  -s ENVIRONMENT='web' \
 	  -s SINGLE_FILE=1 \

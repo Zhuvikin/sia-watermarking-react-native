@@ -25,8 +25,6 @@ build:
   script:
   - npm install
   - make
-  - ls -la src/lib/gsl/
-  - ls -la src/lib/gsl/gsl.mjs
   - npm run build
   - echo Build successful!
   artifacts:
