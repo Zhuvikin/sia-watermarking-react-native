@@ -23,6 +23,7 @@ export const initImageMagick = async (): Promise<ImageMagick> => {
                 for (var i=0; i<arr.length; i++) {
                     result[i] = module.getValue(ptr+i*v1.BYTES_PER_ELEMENT, 'double');
                 }
+                module._free(ptr);
                 return result;
             }
         });

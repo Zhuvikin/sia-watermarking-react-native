@@ -6,6 +6,7 @@ variables:
   PUBLIC_URL: /sia-watermarking
   GIT_SUBMODULE_STRATEGY: recursive
   NODE_VERSION: 18.5.0
+  NPM_VERSION: 8.13.2
   NVM_DIR: /root/.nvm
 
 cache:
@@ -19,7 +20,8 @@ build:
   - apt-get update && apt-get -y install autoconf libtool
   - curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
   - . /root/.nvm/nvm.sh
-  - nvm install 18.5.0
+  - nvm install $NODE_VERSION
+  - npm install -g npm@$NPM_VERSION
   - node -v
   - npm -v
   script:
