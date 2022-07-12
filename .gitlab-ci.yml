@@ -29,6 +29,7 @@ build:
     expire_in: 30 mins
     paths:
     - ./build
+    - /root/.npm/_logs
 
 pages:
   image: node:18.4.0-alpine3.15
