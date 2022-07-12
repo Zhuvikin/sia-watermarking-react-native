@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-EMSCRIPTEN_KEEPALIVE void double_numbers(const double *v1, double *v2, const int length)
+EMSCRIPTEN_KEEPALIVE void double_numbers(const double *inPtr, const int inLength, double *outPtr, const int outLength)
 {
    int i = 0;
-   for (i = 0; i < length; i++)
+   for (i = 0; i < outLength; i++)
    {
-       v2[i] = 2 * v1[i];
+       outPtr[i] = 2 * inPtr[i];
    }
 }
