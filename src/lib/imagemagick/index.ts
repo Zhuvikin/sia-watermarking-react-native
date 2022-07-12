@@ -13,18 +13,17 @@ export const initImageMagick = async (): Promise<ImageMagick> => {
         resolve({
             module,
             doubleNumbers: (arr : number[]) => {
-                var v1 = new Float64Array(arr);
-                var uarray = new Uint8Array(v1.buffer);
+                var float64Array = new Float64Array(arr);
+                var inputUInt8Array = new Uint8Array(float64Array.buffer);
+                var outputResultPtr = module._malloc(float64Array.byteLength);
 
-                var ptr = module._malloc(v1.byteLength);
-                doubleNumbers(uarray, ptr, arr.length);
-                
-                const result = new Float64Array(arr.length);
-                for (var i=0; i<arr.length; i++) {
-                    result[i] = module.getValue(ptr+i*v1.BYTES_PER_ELEMENT, 'double');
-                }
-                module._free(ptr);
-                return result;
+                doubleNumbers(inputUInt8Array, outputResultPtr, arr.length);
+
+                const heap8Array = module.HEAPU8.subarray(outputResultPtr, outputResultPtr + float64Array.byteLength);
+                const outputUInt8Array = new Uint8Array(heap8Array);
+                module._free(outputResultPtr);
+                const result = new Float64Array(outputUInt8Array.buffer);
+                return result
             }
         });
     });
