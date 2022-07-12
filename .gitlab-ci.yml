@@ -16,12 +16,12 @@ build:
   image: emscripten/emsdk:3.1.15
   stage: build
   before_script:
+  - apt-get update && apt-get -y install autoconf libtool
+  - curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+  - . /root/.nvm/nvm.sh
+  - nvm install 18.5.0
   - node -v
   - npm -v
-  - npm install npm@8.11.0 -g
-  - npm -v
-  - uname -a
-  - apt-get update && apt-get -y install autoconf libtool
   - npm install
   - make
   script:
