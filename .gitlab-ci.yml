@@ -15,6 +15,7 @@ build:
   stage: build
   before_script:
   - node -v
+  - npm -v
   - uname -a
   - apt-get update && apt-get -y install autoconf libtool
   - curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
