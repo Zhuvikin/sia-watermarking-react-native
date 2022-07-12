@@ -5,7 +5,7 @@ stages:
 variables:
   PUBLIC_URL: /sia-watermarking
   GIT_SUBMODULE_STRATEGY: recursive
-  NODE_VERSION: 8.10.0
+  NODE_VERSION: 18.5.0
   NVM_DIR: /root/.nvm
 
 cache:
@@ -28,11 +28,9 @@ build:
   - cp /root/.nvm/versions/node/v${NODE_VERSION}/bin/node /usr/bin/
   - cp /root/.nvm/versions/node/v${NODE_VERSION}/bin/npm /usr/bin/
   - /root/.nvm/versions/node/v${NODE_VERSION}/bin/npm install leasot@latest -g
-
   - nvm --version
-  - nvm ls
-  - nvm ls-remote
   - node -v
+  - npm -v
   - npm install
   - make
   script:
