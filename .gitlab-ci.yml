@@ -18,6 +18,8 @@ build:
   before_script:
   - node -v
   - npm -v
+  - npm install npm@8.11.0 -g
+  - npm -v
   - uname -a
   - apt-get update && apt-get -y install autoconf libtool
   - npm install
