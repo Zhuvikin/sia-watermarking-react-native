@@ -22,9 +22,9 @@ build:
   - nvm install 18.5.0
   - node -v
   - npm -v
+  script:
   - npm install
   - make
-  script:
   - npm run build
   - echo Build successful!
   artifacts:

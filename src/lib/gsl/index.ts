@@ -1,4 +1,4 @@
-import createGSLModule from "./gsl.mjs";
+import createGSLModule from "src/lib/gsl/gsl.mjs";
 
 export type GSL = {
     module: any;
