@@ -20,7 +20,11 @@ build:
   - apt-get update && apt-get -y install autoconf libtool
   - curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
   - export NVM_DIR="$HOME/.nvm"
-  - $NVM_DIR/nvm.sh
+  - source /root/.bashrc
+  - echo "$HOME/.nvm"
+  - ls $HOME/.nvm
+  - echo "$NVM_DIR/nvm.sh"
+  - sh $NVM_DIR/nvm.sh
   - nvm --version
   - nvm ls
   - nvm ls-remote
