@@ -4,7 +4,6 @@ stages:
 
 variables:
   PUBLIC_URL: /sia-watermarking
-  GIT_SUBMODULE_STRATEGY: recursive
   NODE_VERSION: 18.5.0
   NPM_VERSION: 8.13.2
   NVM_DIR: /root/.nvm
@@ -17,6 +16,18 @@ build:
   image: emscripten/emsdk:3.1.15
   stage: build
   before_script:
+  - git config --global credential.helper store
+  - git config --global credential.useHttpPath true
+  - |
+    git credential approve <<EOF
+    protocol=https
+    host=gitlab.com
+    path=zhuvikin/libjpeg.git
+    username=${CI_DEPENDENCY_PROXY_USER}
+    password=${CI_DEPENDENCY_PROXY_PASSWORD}
+    EOF
+  - git submodule update --init --recursive
+  script:
   - apt-get update && apt-get -y install autoconf libtool
   - curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
   - . /root/.nvm/nvm.sh
@@ -24,7 +35,6 @@ build:
   - npm install -g npm@$NPM_VERSION
   - node -v
   - npm -v
-  script:
   - npm install
   - make
   - npm run build
