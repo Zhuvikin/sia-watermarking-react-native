@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.png';
 import './App.css';
 import { ImageMagick, initImageMagick } from "./lib/imagemagick";
 import { GSL, initGSL } from "./lib/gsl";
+import {Header} from "./header/Header";
+import {Content} from "./content/Content";
 
 function App() {
-  const [gslModule, setGSLModule] : [GSL, React.Dispatch<React.SetStateAction<GSL>>] = useState();
-  const [imageMagickModule, setImageMagickModule] : [ImageMagick, React.Dispatch<React.SetStateAction<ImageMagick>>] = useState();
+  const [gslModule, setGSLModule] : [GSL | undefined, React.Dispatch<React.SetStateAction<GSL | undefined>>] = useState();
+  const [imageMagickModule, setImageMagickModule] : [ImageMagick | undefined, React.Dispatch<React.SetStateAction<ImageMagick | undefined>>] = useState();
 
   useEffect(
     () => {
@@ -26,15 +27,10 @@ function App() {
     )
   }
 
-  imageMagickModule.testImagemagick(2.3)
-
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1>Watermarking</h1>
-        <div>J0(5) = {gslModule.besselJ0(5)}</div>
-      </header>
+      <Header />
+      <Content gslModule={gslModule} imageMagickModule={imageMagickModule} />
     </div>
   );
 }

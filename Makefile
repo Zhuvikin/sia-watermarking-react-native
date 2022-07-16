@@ -6,7 +6,7 @@ src/lib/imagemagick/imagemagick.mjs: src/lib/imagemagick/install/lib/libMagickCo
     	echo `src/lib/imagemagick/install/bin/MagickCore-config --cflags --ldflags --libs`; \
 		emcc --no-entry \
 		  src/lib/libjpeg/install/lib/libjpeg.a \
-		  --bind src/lib/imagemagick/main.c \
+		  --bind src/lib/imagemagick/imagemagick.c \
 		  -o src/lib/imagemagick/imagemagick.mjs \
 		  -s ENVIRONMENT='web' \
 		  -s SINGLE_FILE=1 \
