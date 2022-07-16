@@ -3,7 +3,7 @@ clean-im:
 
 src/lib/imagemagick/imagemagick.mjs: src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a
 	export PKG_CONFIG_PATH=${PWD}/src/lib/imagemagick/install/lib/pkgconfig/:${PWD}/src/lib/libjpeg/install/lib/pkgconfig/; \
-    	echo `src/lib/imagemagick/install/bin/MagickCore-config --cflags --ldflags --libs` && \
+    	echo `${PWD}/src/lib/imagemagick/install/bin/MagickCore-config --cflags --ldflags --libs` && \
 		emcc --no-entry \
 		  src/lib/libjpeg/install/lib/libjpeg.a \
 		  --bind src/lib/imagemagick/imagemagick.c \
@@ -16,7 +16,7 @@ src/lib/imagemagick/imagemagick.mjs: src/lib/imagemagick/install/lib/libMagickCo
 		  -s EXPORTED_FUNCTIONS='["_malloc", "_free"]' \
 		  -s EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
 		  -s ALLOW_MEMORY_GROWTH=1 \
-		  `src/lib/imagemagick/install/bin/MagickCore-config --cflags --ldflags --libs` \
+		  `${PWD}/src/lib/imagemagick/install/bin/MagickCore-config --cflags --ldflags --libs` \
 		  -I./src/lib/libjpeg/install/include \
 		  -L./src/lib/libjpeg/install/libs \
 		  -O3
