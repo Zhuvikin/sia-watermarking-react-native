@@ -3,7 +3,7 @@ clean-im:
 
 src/lib/imagemagick/imagemagick.mjs: src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a
 	export PKG_CONFIG_PATH=${PWD}/src/lib/imagemagick/install/lib/pkgconfig/:${PWD}/src/lib/libjpeg/install/lib/pkgconfig/; \
-    	echo `${PWD}/src/lib/imagemagick/install/bin/MagickCore-config --cflags --ldflags --libs` && \
+    	echo `src/lib/imagemagick/install/bin/MagickCore-config --cflags --ldflags --libs` && \
 		emcc --no-entry \
 		  src/lib/libjpeg/install/lib/libjpeg.a \
 		  --bind src/lib/imagemagick/imagemagick.c \
@@ -16,7 +16,7 @@ src/lib/imagemagick/imagemagick.mjs: src/lib/imagemagick/install/lib/libMagickCo
 		  -s EXPORTED_FUNCTIONS='["_malloc", "_free"]' \
 		  -s EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
 		  -s ALLOW_MEMORY_GROWTH=1 \
-		  `${PWD}/src/lib/imagemagick/install/bin/MagickCore-config --cflags --ldflags --libs` \
+		  `src/lib/imagemagick/install/bin/MagickCore-config --cflags --ldflags --libs` \
 		  -I./src/lib/libjpeg/install/include \
 		  -L./src/lib/libjpeg/install/libs \
 		  -O3
@@ -25,8 +25,6 @@ src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a: src/lib/libjpeg/source/.l
 	export PKG_CONFIG_PATH=${PWD}/src/lib/imagemagick/install/lib/pkgconfig/:${PWD}/src/lib/libjpeg/install/lib/pkgconfig/; \
 	export CFLAGS="-I${PWD}/src/lib/libjpeg/install/include/ -O3"; \
 	export LDFLAGS="-L${PWD}/src/lib/libjpeg/install/lib/"; \
-	export WORKING_DIR="${PWD}"; \
-	echo "WORKING_DIR=${WORKING_DIR}"; \
 		cd src/lib/imagemagick/source; \
 			emconfigure ./configure \
 			--disable-shared \
@@ -36,11 +34,10 @@ src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a: src/lib/libjpeg/source/.l
 			--without-perl \
 			--enable-hdri=no \
 			--without-magick-plus-plus \
-			--prefix=${DIR}/src/lib/imagemagick/install \
-			PKG_CONFIG_PATH="${WORKING_DIR}/src/lib/imagemagick/install/lib/pkgconfig/:${WORKING_DIR}/src/lib/libjpeg/install/lib/pkgconfig/" && \
+			--prefix=${PWD}/src/lib/imagemagick/install \
+			PKG_CONFIG_PATH="${PWD}/src/lib/imagemagick/install/lib/pkgconfig/:${PWD}/src/lib/libjpeg/install/lib/pkgconfig/" && \
 			emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 && \
-			emmake make install && \
-			cat "${WORKING_DIR}/src/lib/imagemagick/install/bin/MagickCore-config"
+			emmake make install
 
 src/lib/libjpeg/source/.libs/libjpeg.a: src/lib/libjpeg/source/configure
 	cd src/lib/libjpeg/source; \
