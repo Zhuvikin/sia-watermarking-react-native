@@ -4,3 +4,6 @@
 [submodule "src/lib/imagemagick/source"]
 	path = src/lib/imagemagick/source
 	url = https://github.com/ImageMagick/ImageMagick.git
+[submodule "src/lib/libjpeg/source"]
+	path = src/lib/libjpeg/source
+	url = https://gitlab.com/zhuvikin/libjpeg.git

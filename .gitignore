@@ -66,3 +66,7 @@ versions/node/
 alias
 .cache
 *.wasm
+test.xcf
+test.jpg
+test1.jpg
+install/

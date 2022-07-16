@@ -26,7 +26,7 @@ function App() {
     )
   }
 
-  const numbers = [2.3, 4.2, 3.14];
+  imageMagickModule.testImagemagick(2.3)
 
   return (
     <div className="App">
@@ -34,7 +34,6 @@ function App() {
         <img src={logo} className="App-logo" alt="logo" />
         <h1>Watermarking</h1>
         <div>J0(5) = {gslModule.besselJ0(5)}</div>
-        <div>2 * {numbers.join(', ')} = {imageMagickModule.doubleNumbers(numbers).join(', ')}</div>
       </header>
     </div>
   );
