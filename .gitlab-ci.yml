@@ -28,7 +28,7 @@ build:
     EOF
   - git submodule update --init --recursive
   script:
-  - apt-get update && apt-get -y install autoconf libtool
+  - apt-get update && apt-get -y install autoconf libtool pkg-config
   - curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
   - . /root/.nvm/nvm.sh
   - nvm install $NODE_VERSION
