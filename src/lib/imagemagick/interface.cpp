@@ -9,41 +9,34 @@ extern "C" {
 
 using namespace emscripten;
 
-struct ImageDetails {
+class ImageDetails {
+public:
     int width;
     int height;
     int colorspace;
     int depth;
+    unsigned int pixelsPointer;
+
+    ImageDetails(std::string imgBase64) {
+        unsigned char *decodedBlob;
+        ImageInfo *imageInfo = AcquireImageInfo();
+        ExceptionInfo *exception = AcquireExceptionInfo();
+        Image *image = test_imagemagick_c(imgBase64.c_str(), decodedBlob, imageInfo, exception);
+
+        width = image->columns;
+        height = image->rows;
+        colorspace = image->colorspace;
+        depth = image->depth;
+        pixelsPointer = (unsigned int) GetVirtualPixels(image, 0, 0, image->columns, image->rows, exception);
+    };
 };
 
-ImageDetails ImageDetailsFromBase64(std::string imgBase64) {
-    unsigned char* decodedBlob;
-    ImageInfo* imageInfo = AcquireImageInfo();
-    ExceptionInfo* exceptionInfo = AcquireExceptionInfo();
-
-    Image* image = test_imagemagick_c(imgBase64.c_str(), decodedBlob, imageInfo, exceptionInfo);
-    ImageDetails imageDetails;
-    imageDetails.width = image->columns;
-    imageDetails.height = image->rows;
-    imageDetails.colorspace = image->colorspace;
-    imageDetails.depth = image->depth;
-
-    free(decodedBlob);
-    image = DestroyImage(image);
-    imageInfo = DestroyImageInfo(imageInfo);
-    exceptionInfo = DestroyExceptionInfo(exceptionInfo);
-
-    return imageDetails;
-}
-
-EMSCRIPTEN_BINDINGS(image_details) {
-    class_<ImageDetails>("ImageDetails")
-        .constructor<>()
-        .property("width", &ImageDetails::width)
-        .property("height", &ImageDetails::height)
-        .property("colorspace", &ImageDetails::colorspace)
-        .property("depth", &ImageDetails::depth)
-    ;
-
-    function("ImageDetailsFromBase64", &ImageDetailsFromBase64);
+EMSCRIPTEN_BINDINGS(imagemagick) {
+        class_<ImageDetails>("ImageDetails")
+                .constructor<std::string>()
+                .property("width", &ImageDetails::width)
+                .property("height", &ImageDetails::height)
+                .property("colorspace", &ImageDetails::colorspace)
+                .property("depth", &ImageDetails::depth)
+                .property("pixelsPointer", &ImageDetails::pixelsPointer);
 }
