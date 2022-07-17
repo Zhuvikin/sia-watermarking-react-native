@@ -71,7 +71,4 @@ test.xcf
 test.jpg
 test1.jpg
 install/
-/src/lib/gsl/source
-/src/lib/imagemagick/source
-/src/lib/libjpeg/source
 

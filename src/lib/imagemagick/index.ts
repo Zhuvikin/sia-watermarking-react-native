@@ -1,18 +1,23 @@
 import createImageMagickModule from "./imagemagick.mjs";
 
+export type ImageDetails = {
+    width: number,
+    height: number,
+    colorspace: number,
+    depth: number
+}
+
 export type ImageMagick = {
     module: any;
-    testImagemagick: any;
+    imageDetailsFromBase64: (imageBase64 : string) => ImageDetails;
 };
 
 export const initImageMagick = async (): Promise<ImageMagick> => {
     const module = await createImageMagickModule();
-    const testImagemagick = module.cwrap("test_imagemagick", "number", ["string"]);
-
     return new Promise<ImageMagick>((resolve, reject) => {
         resolve({
             module,
-            testImagemagick
+            imageDetailsFromBase64: module.ImageDetailsFromBase64,
         });
     });
 }
