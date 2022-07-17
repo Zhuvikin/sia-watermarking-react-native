@@ -28,6 +28,11 @@ public:
         colorspace = image->colorspace;
         depth = image->depth;
         pixelsPointer = (unsigned int) GetVirtualPixels(image, 0, 0, image->columns, image->rows, exception);
+
+        free(decodedBlob);
+        image = DestroyImage(image);
+        imageInfo = DestroyImageInfo(imageInfo);
+        exception = DestroyExceptionInfo(exception);
     };
 };
 

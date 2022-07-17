@@ -15,10 +15,10 @@ const Canvas = ({
         const context = canvas.getContext('2d');
         const imageData = context!.createImageData(image.width, image.height);
         imageData.data.set(image.pixels, 0);
-        context!.putImageData(imageData, 40, 40);
+        context!.putImageData(imageData, 0, 0);
     }, [])
 
-    return <canvas ref={canvasRef} {...rest}/>
+    return <canvas width={image.width} height={image.height} ref={canvasRef} {...rest}/>
 }
 
 export default Canvas
