@@ -1,6 +1,3 @@
-clean-im:
-	rm src/lib/imagemagick/imagemagick.mjs
-
 src/lib/imagemagick/imagemagick.mjs: src/lib/imagemagick/interface.o src/lib/imagemagick/imagemagick.o src/lib/libjpeg/install/lib/libjpeg.a
 	export PKG_CONFIG_PATH=${PWD}/src/lib/imagemagick/install/lib/pkgconfig/:${PWD}/src/lib/libjpeg/install/lib/pkgconfig/; \
     	echo `src/lib/imagemagick/install/bin/MagickCore-config --cflags --cppflags --ldflags --libs` && \
@@ -23,26 +20,30 @@ src/lib/imagemagick/imagemagick.mjs: src/lib/imagemagick/interface.o src/lib/ima
 		  -O3
 
 src/lib/imagemagick/interface.o: src/lib/imagemagick/imagemagick.o
- 	export PKG_CONFIG_PATH=${PWD}/src/lib/imagemagick/install/lib/pkgconfig/:${PWD}/src/lib/libjpeg/install/lib/pkgconfig/; \
-     	echo `src/lib/imagemagick/install/bin/MagickCore-config --cppflags --ldflags --libs`; \
- 		em++ -c src/lib/imagemagick/interface.cpp \
+	em++ -c src/lib/imagemagick/interface.cpp \
  		  -o src/lib/imagemagick/interface.o \
- 		  `src/lib/imagemagick/install/bin/MagickCore-config --cppflags --ldflags --libs` \
+ 		  -DMAGICKCORE_HDRI_ENABLE=0 \
+ 		  -DMAGICKCORE_QUANTUM_DEPTH=16 \
+ 		  -I./src/lib/imagemagick/install/include/ImageMagick-7 \
  		  -I./src/lib/libjpeg/install/include \
+ 		  -L./src/lib/imagemagick/install/lib \
  		  -L./src/lib/libjpeg/install/lib \
+ 		  -lMagickCore-7.Q16 \
  		  -O3
 
-src/lib/imagemagick/imagemagick.o: src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a
- 	export PKG_CONFIG_PATH=${PWD}/src/lib/imagemagick/install/lib/pkgconfig/:${PWD}/src/lib/libjpeg/install/lib/pkgconfig/; \
-     	echo `src/lib/imagemagick/install/bin/MagickCore-config --cflags --ldflags --libs`; \
- 		emcc -c src/lib/imagemagick/imagemagick.c \
+src/lib/imagemagick/imagemagick.o: src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a src/lib/libjpeg/install/lib/libjpeg.a
+	emcc -c src/lib/imagemagick/imagemagick.c \
  		  -o src/lib/imagemagick/imagemagick.o \
- 		  `src/lib/imagemagick/install/bin/MagickCore-config --cflags --ldflags --libs` \
+ 		  -DMAGICKCORE_HDRI_ENABLE=0 \
+ 		  -DMAGICKCORE_QUANTUM_DEPTH=16 \
+ 		  -I./src/lib/imagemagick/install/include/ImageMagick-7 \
  		  -I./src/lib/libjpeg/install/include \
+ 		  -L./src/lib/imagemagick/install/lib \
  		  -L./src/lib/libjpeg/install/lib \
+ 		  -lMagickCore-7.Q16 \
  		  -O3
 
-src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a: src/lib/libjpeg/source/.libs/libjpeg.a src/lib/imagemagick/source/configure
+src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a: src/lib/libjpeg/install/lib/libjpeg.a src/lib/imagemagick/source/configure
 	export PKG_CONFIG_PATH=${PWD}/src/lib/imagemagick/install/lib/pkgconfig/:${PWD}/src/lib/libjpeg/install/lib/pkgconfig/; \
 	export CFLAGS="-I${PWD}/src/lib/libjpeg/install/include/ -O3"; \
 	export LDFLAGS="-L${PWD}/src/lib/libjpeg/install/lib/"; \
@@ -60,7 +61,7 @@ src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a: src/lib/libjpeg/source/.l
 			emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 && \
 			emmake make install
 
-src/lib/libjpeg/source/.libs/libjpeg.a: src/lib/libjpeg/source/configure
+src/lib/libjpeg/install/lib/libjpeg.a: src/lib/libjpeg/source/configure src/lib/gsl/gsl.mjs
 	cd src/lib/libjpeg/source; \
 		autoreconf -fvi && \
 		emconfigure ./configure \
@@ -107,3 +108,8 @@ clean-gsl:
 	rm -rf .git/modules/src/lib/gsl/source;
 	git config --remove-section submodule.src/lib/gsl/source || true;
 	git submodule add git://git.savannah.gnu.org/gsl.git src/lib/gsl/source;
+
+clean-im:
+	rm src/lib/imagemagick/imagemagick.mjs || true; \
+		rm src/lib/imagemagick/interface.o || true; \
+		rm src/lib/imagemagick/imagemagick.o || true

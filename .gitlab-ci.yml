@@ -36,8 +36,7 @@ build:
   - node -v
   - npm -v
   - npm install
-  - make src/lib/imagemagick/imagemagick.mjs
-  - make src/lib/gsl/gsl.mjs
+  - make
   - npm run build
   - echo Build successful!
   artifacts:
