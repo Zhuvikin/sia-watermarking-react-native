@@ -17,9 +17,16 @@
 [submodule "src/lib/openjpeg/source"]
 	path = src/lib/openjpeg/source
 	url = https://github.com/uclouvain/openjpeg.git
+	ignore = dirty
 [submodule "src/lib/imagemagick/source"]
 	path = src/lib/imagemagick/source
 	url = https://github.com/ImageMagick/ImageMagick.git
+	ignore = dirty
 [submodule "src/lib/libheif/source"]
 	path = src/lib/libheif/source
 	url = https://github.com/strukturag/libheif.git
+	ignore = dirty
+[submodule "src/lib/libde265/source"]
+	path = src/lib/libde265/source
+	url = https://github.com/strukturag/libde265.git
+    ignore = dirty
