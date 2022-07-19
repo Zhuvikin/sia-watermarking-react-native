@@ -5,7 +5,7 @@ src/lib/imagemagick/imagemagick.mjs: src/lib/imagemagick/interface.o src/lib/ima
 		  src/lib/libjpeg/install/lib/libjpeg.a \
 		  src/lib/libpng/install/lib/libpng.a \
 		  src/lib/zlib/install/lib/libz.a \
-		  -o src/lib	/imagemagick/imagemagick.mjs \
+		  -o src/lib/imagemagick/imagemagick.mjs \
 		  -s ENVIRONMENT='web' \
 		  -s SINGLE_FILE=1 \
 		  -s DISABLE_EXCEPTION_CATCHING=0 \
