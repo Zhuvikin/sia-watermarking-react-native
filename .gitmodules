@@ -33,3 +33,4 @@
 [submodule "src/lib/libtiff/source"]
 	path = src/lib/libtiff/source
 	url = https://gitlab.com/libtiff/libtiff.git
+    ignore = dirty

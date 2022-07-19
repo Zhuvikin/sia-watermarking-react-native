@@ -234,7 +234,7 @@ clean-libtiff:
 	git rm -rf src/lib/libtiff/source || true;
 	rm -rf .git/modules/src/lib/libtiff/source;
 	git config --remove-section submodule.src/lib/libtiff/source || true;
-	git submodule add git@gitlab.com:libtiff/libtiff.git src/lib/libtiff/source;
+	git submodule add https://gitlab.com/libtiff/libtiff.git src/lib/libtiff/source;
 
 clean-imagemagick:
 	git rm -f src/lib/imagemagick/source || true;
