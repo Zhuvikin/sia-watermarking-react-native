@@ -20,3 +20,6 @@
 [submodule "src/lib/imagemagick/source"]
 	path = src/lib/imagemagick/source
 	url = https://github.com/ImageMagick/ImageMagick.git
+[submodule "src/lib/libheif/source"]
+	path = src/lib/libheif/source
+	url = https://github.com/strukturag/libheif.git
