@@ -10,3 +10,11 @@
 	path = src/lib/libjpeg/source
 	url = https://gitlab.com/zhuvikin/libjpeg.git
 	ignore = dirty
+[submodule "src/lib/libpng/source"]
+	path = src/lib/libpng/source
+	url = git://git.code.sf.net/p/libpng/code
+    ignore = dirty
+[submodule "src/lib/zlib/source"]
+	path = src/lib/zlib/source
+	url = https://github.com/madler/zlib.git
+    ignore = dirty
