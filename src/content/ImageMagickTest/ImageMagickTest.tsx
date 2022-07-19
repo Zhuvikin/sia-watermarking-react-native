@@ -21,6 +21,7 @@ export const ImageMagickTest = ({ imageMagickModule, imgBase64 }: ImageMagickTes
         <p>Dimensions: {image.width} x {image.height}</p>
         <p>Depth: {image.depth} bits</p>
         <p>Color Space: {colorspaceName}</p>
+        <p>Channels: {image.number_channels}</p>
         <Canvas image={image} />
     </div>;
 };
