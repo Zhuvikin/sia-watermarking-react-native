@@ -30,3 +30,7 @@
 	path = src/lib/libde265/source
 	url = https://github.com/strukturag/libde265.git
     ignore = dirty
+[submodule "src/lib/libtiff/source"]
+	path = src/lib/libtiff/source
+	url = git@gitlab.com:libtiff/libtiff.git
+    ignore = dirty
