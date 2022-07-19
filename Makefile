@@ -50,6 +50,30 @@ src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a: src/lib/libjpeg/install/l
 		git checkout 7.1.0.43 && \
 			emconfigure ./configure \
 			--disable-shared \
+            --disable-largefile \
+            --disable-openmp \
+            --without-bzlib \
+            --without-dps \
+            --without-freetype \
+            --without-jbig \
+            --without-lcms \
+            --without-wmf \
+            --without-xml \
+            --without-fftw \
+            --without-flif \
+            --without-fpx \
+            --without-djvu \
+            --without-fontconfig \
+            --without-raqm \
+            --without-gslib \
+            --without-gvc \
+            --without-lqr \
+            --without-openexr \
+            --without-pango \
+            --without-raw \
+            --without-rsvg \
+            --without-webp \
+            --without-xml \
 			--without-threads \
 			--without-x \
 			--with-quantum-depth=16 \
