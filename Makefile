@@ -3,7 +3,9 @@ src/lib/imagemagick/imagemagick.mjs: src/lib/imagemagick/interface.o src/lib/ima
     	echo `src/lib/imagemagick/install/bin/MagickCore-config --cflags --cppflags --ldflags --libs` && \
 		em++ -Wall --bind src/lib/imagemagick/interface.o src/lib/imagemagick/imagemagick.o \
 		  src/lib/libjpeg/install/lib/libjpeg.a \
-		  -o src/lib/imagemagick/imagemagick.mjs \
+		  src/lib/libpng/install/lib/libpng.a \
+		  src/lib/zlib/install/lib/libz.a \
+		  -o src/lib	/imagemagick/imagemagick.mjs \
 		  -s ENVIRONMENT='web' \
 		  -s SINGLE_FILE=1 \
 		  -s DISABLE_EXCEPTION_CATCHING=0 \
@@ -26,9 +28,6 @@ src/lib/imagemagick/interface.o: src/lib/imagemagick/imagemagick.o
  		  -DMAGICKCORE_QUANTUM_DEPTH=16 \
  		  -I./src/lib/imagemagick/install/include/ImageMagick-7 \
  		  -I./src/lib/libjpeg/install/include \
- 		  -L./src/lib/imagemagick/install/lib \
- 		  -L./src/lib/libjpeg/install/lib \
- 		  -lMagickCore-7.Q16 \
  		  -O3
 
 src/lib/imagemagick/imagemagick.o: src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a src/lib/libjpeg/install/lib/libjpeg.a
@@ -38,15 +37,12 @@ src/lib/imagemagick/imagemagick.o: src/lib/imagemagick/install/lib/libMagickCore
  		  -DMAGICKCORE_QUANTUM_DEPTH=16 \
  		  -I./src/lib/imagemagick/install/include/ImageMagick-7 \
  		  -I./src/lib/libjpeg/install/include \
- 		  -L./src/lib/imagemagick/install/lib \
- 		  -L./src/lib/libjpeg/install/lib \
- 		  -lMagickCore-7.Q16 \
  		  -O3
 
-src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a: src/lib/libjpeg/install/lib/libjpeg.a src/lib/imagemagick/source/configure
-	export PKG_CONFIG_PATH=${PWD}/src/lib/imagemagick/install/lib/pkgconfig/:${PWD}/src/lib/libjpeg/install/lib/pkgconfig/; \
-	export CFLAGS="-I${PWD}/src/lib/libjpeg/install/include/ -O3"; \
-	export LDFLAGS="-L${PWD}/src/lib/libjpeg/install/lib/"; \
+src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a: src/lib/libjpeg/install/lib/libjpeg.a src/lib/libpng/install/lib/libpng.a src/lib/imagemagick/source/configure
+	export PKG_CONFIG_PATH=${PWD}/src/lib/imagemagick/install/lib/pkgconfig/:${PWD}/src/lib/libjpeg/install/lib/pkgconfig/:${PWD}/src/lib/libpng/install/lib/pkgconfig/:${PWD}/src/lib/zlib/install/lib/pkgconfig/; \
+	export CFLAGS="-I${PWD}/src/lib/libjpeg/install/include/ -I${PWD}/src/lib/libpng/install/include/ -I${PWD}/src/lib/zlib/install/include/ -O3"; \
+	export LDFLAGS="-L${PWD}/src/lib/libjpeg/install/lib/ -L${PWD}/src/lib/libpng/install/lib/ -L${PWD}/src/lib/zlib/install/lib/"; \
 		cd src/lib/imagemagick/source; \
 			emconfigure ./configure \
 			--disable-shared \
@@ -57,9 +53,31 @@ src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a: src/lib/libjpeg/install/l
 			--enable-hdri=no \
 			--without-magick-plus-plus \
 			--prefix=${PWD}/src/lib/imagemagick/install \
-			PKG_CONFIG_PATH="${PWD}/src/lib/imagemagick/install/lib/pkgconfig/:${PWD}/src/lib/libjpeg/install/lib/pkgconfig/" && \
+			PKG_CONFIG_PATH="${PWD}/src/lib/imagemagick/install/lib/pkgconfig/:${PWD}/src/lib/libjpeg/install/lib/pkgconfig/:${PWD}/src/lib/libpng/install/lib/pkgconfig/:${PWD}/src/lib/zlib/install/lib/pkgconfig/" && \
 			emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 && \
 			emmake make install
+
+src/lib/libpng/install/lib/libpng.a: src/lib/libpng/source/CMakeLists.txt src/lib/zlib/install/lib/libz.a
+	export CPPFLAGS="-I${PWD}/src/lib/zlib/install/include" LDFLAGS="-L${PWD}/src/lib/zlib/install/lib"; \
+	cd src/lib/libpng/source && \
+	git checkout v1.6.37 && \
+		libtoolize && \
+        autoreconf && \
+        automake --add-missing && \
+        emconfigure ./configure \
+			--disable-shared \
+			--prefix=${PWD}/src/lib/libpng/install && \
+        emmake make -s BINARYEN_TRAP_MODE=clamp -s ALLOW_MEMORY_GROWTH=1 CFLAGS="-O3" CXXFLAGS="-O3" && \
+		emmake make install
+
+src/lib/zlib/install/lib/libz.a: src/lib/zlib/source/CMakeLists.txt src/lib/gsl/gsl.mjs
+	cd src/lib/zlib/source && \
+	git checkout v1.2.12 && \
+        emconfigure ./configure \
+			--static \
+			--prefix=${PWD}/src/lib/zlib/install && \
+        emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 CFLAGS="-O3" CXXFLAGS="-O3" && \
+		emmake make install
 
 src/lib/libjpeg/install/lib/libjpeg.a: src/lib/libjpeg/source/configure src/lib/gsl/gsl.mjs
 	cd src/lib/libjpeg/source; \
@@ -67,7 +85,7 @@ src/lib/libjpeg/install/lib/libjpeg.a: src/lib/libjpeg/source/configure src/lib/
 		emconfigure ./configure \
 			--disable-shared \
 			--prefix=${PWD}/src/lib/libjpeg/install && \
-		emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 CFLAGS="-O3" && \
+		emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 CFLAGS="-O3" CXXFLAGS="-O3" && \
 		emmake make install
 
 src/lib/gsl/gsl.mjs: src/lib/gsl/source/.libs/libgsl.a
@@ -96,6 +114,18 @@ clean-libjpeg:
 	rm -rf .git/modules/src/lib/libjpeg/source;
 	git config --remove-section submodule.src/lib/libjpeg/source || true;
 	git submodule add https://gitlab.com/zhuvikin/libjpeg.git src/lib/libjpeg/source;
+
+clean-zlib:
+	git rm -rf src/lib/zlib/source || true;
+	rm -rf .git/modules/src/lib/zlib/source;
+	git config --remove-section submodule.src/lib/zlib/source || true;
+	git submodule add https://github.com/madler/zlib.git src/lib/zlib/source;
+
+clean-libpng:
+	git rm -rf src/lib/libpng/source || true;
+	rm -rf .git/modules/src/lib/libpng/source;
+	git config --remove-section submodule.src/lib/libpng/source || true;
+	git submodule add git://git.code.sf.net/p/libpng/code src/lib/libpng/source;
 
 clean-imagemagick:
 	git rm -f src/lib/imagemagick/source || true;

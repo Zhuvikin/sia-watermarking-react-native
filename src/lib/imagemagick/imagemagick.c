@@ -13,7 +13,7 @@ Image* test_imagemagick_c(const char* imgBase64, unsigned char* decodedBlob, Ima
     if (exceptionInfo->severity != UndefinedException)
         CatchException(exceptionInfo);
 
-    printf("width=%lu, height=%lu, colorspace=%i, depth=%lu, blob length=%lu\n",
+    printf("image width=%lu, height=%lu, colorspace=%i, depth=%lu, blob length=%lu\n",
            image->columns, image->rows, image->colorspace, image->depth, decodedBlobLength);
     return image;
 }

@@ -1,5 +1,5 @@
 import React, {useRef, useLayoutEffect, MutableRefObject} from 'react'
-import {Image} from '../../../lib/imagemagick/index'
+import {Image} from '../../../lib/imagemagick/types/image'
 
 type CanvasProps = {
     image: Image
