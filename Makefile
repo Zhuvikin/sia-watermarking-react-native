@@ -1,11 +1,13 @@
 src/lib/imagemagick/imagemagick.mjs: src/lib/imagemagick/interface.o src/lib/imagemagick/imagemagick.o src/lib/libjpeg/install/lib/libjpeg.a
-	export PKG_CONFIG_PATH=${PWD}/src/lib/imagemagick/install/lib/pkgconfig/:${PWD}/src/lib/libjpeg/install/lib/pkgconfig/; \
+	export PKG_CONFIG_PATH=${PWD}/src/lib/imagemagick/install/lib/pkgconfig:${PWD}/src/lib/libjpeg/install/lib/pkgconfig; \
     	echo `src/lib/imagemagick/install/bin/MagickCore-config --cflags --cppflags --ldflags --libs` && \
 		em++ -Wall --bind src/lib/imagemagick/interface.o src/lib/imagemagick/imagemagick.o \
 		  src/lib/libjpeg/install/lib/libjpeg.a \
 		  src/lib/libpng/install/lib/libpng.a \
 		  src/lib/zlib/install/lib/libz.a \
 		  src/lib/openjpeg/install/lib/libopenjp2.a \
+		  src/lib/libheif/install/lib/libheif.a \
+		  src/lib/libde265/install/lib/libde265.a \
 		  -o src/lib/imagemagick/imagemagick.mjs \
 		  -s ENVIRONMENT='web' \
 		  -s SINGLE_FILE=1 \
@@ -40,11 +42,12 @@ src/lib/imagemagick/imagemagick.o: src/lib/imagemagick/install/lib/libMagickCore
  		  -I./src/lib/libjpeg/install/include \
  		  -O3
 
-src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a: src/lib/libjpeg/install/lib/libjpeg.a src/lib/libpng/install/lib/libpng.a src/lib/openjpeg/install/lib/libopenjp2.a src/lib/imagemagick/source/configure
-	export PKG_CONFIG_PATH=${PWD}/src/lib/imagemagick/install/lib/pkgconfig/:${PWD}/src/lib/libjpeg/install/lib/pkgconfig/:${PWD}/src/lib/libpng/install/lib/pkgconfig/:${PWD}/src/lib/zlib/install/lib/pkgconfig/:${PWD}/src/lib/openjpeg/install/lib/pkgconfig/; \
-	export CFLAGS="-I${PWD}/src/lib/libjpeg/install/include/ -I${PWD}/src/lib/libpng/install/include/ -I${PWD}/src/lib/zlib/install/include/ -I${PWD}/src/lib/openjpeg/install/include/ -O3"; \
-	export LDFLAGS="-L${PWD}/src/lib/libjpeg/install/lib/ -L${PWD}/src/lib/libpng/install/lib/ -L${PWD}/src/lib/zlib/install/lib/ -L${PWD}/src/lib/openjpeg/install/lib/"; \
+src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a: src/lib/libjpeg/install/lib/libjpeg.a src/lib/libpng/install/lib/libpng.a src/lib/openjpeg/install/lib/libopenjp2.a src/lib/libheif/install/lib/libheif.a src/lib/imagemagick/source/configure
+	export PKG_CONFIG_PATH="${PWD}/src/lib/imagemagick/install/lib/pkgconfig:${PWD}/src/lib/libjpeg/install/lib/pkgconfig:${PWD}/src/lib/libpng/install/lib/pkgconfig:${PWD}/src/lib/zlib/install/lib/pkgconfig:${PWD}/src/lib/openjpeg/install/lib/pkgconfig:${PWD}/src/lib/libde265/install/lib/pkgconfig:${PWD}/src/lib/libheif/install/lib/pkgconfig"; \
+	export CFLAGS="-I${PWD}/src/lib/libjpeg/install/include -I${PWD}/src/lib/libpng/install/include -I${PWD}/src/lib/zlib/install/include -I${PWD}/src/lib/openjpeg/install/include -I${PWD}/src/lib/libde265/install/include -I${PWD}/src/lib/libheif/install/include -O3"; \
+	export LDFLAGS="-L${PWD}/src/lib/libjpeg/install/lib -L${PWD}/src/lib/libpng/install/lib -L${PWD}/src/lib/zlib/install/lib -L${PWD}/src/lib/openjpeg/install/lib -L${PWD}/src/lib/libde265/install/lib -L${PWD}/src/lib/libheif/install/lib"; \
 		cd src/lib/imagemagick/source; \
+		git checkout 7.1.0.43 && \
 			emconfigure ./configure \
 			--disable-shared \
 			--without-threads \
@@ -52,9 +55,11 @@ src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a: src/lib/libjpeg/install/l
 			--with-quantum-depth=16 \
 			--without-perl \
 			--enable-hdri=no \
+			--with-utilities=no \
+			--with-heic=yes \
 			--without-magick-plus-plus \
 			--prefix=${PWD}/src/lib/imagemagick/install \
-			PKG_CONFIG_PATH="${PWD}/src/lib/imagemagick/install/lib/pkgconfig/:${PWD}/src/lib/libjpeg/install/lib/pkgconfig/:${PWD}/src/lib/libpng/install/lib/pkgconfig/:${PWD}/src/lib/zlib/install/lib/pkgconfig/:${PWD}/src/lib/openjpeg/install/lib/pkgconfig/" && \
+			PKG_CONFIG_PATH="${PWD}/src/lib/imagemagick/install/lib/pkgconfig:${PWD}/src/lib/libjpeg/install/lib/pkgconfig:${PWD}/src/lib/libpng/install/lib/pkgconfig:${PWD}/src/lib/zlib/install/lib/pkgconfig:${PWD}/src/lib/openjpeg/install/lib/pkgconfig:${PWD}/src/lib/libde265/install/lib/pkgconfig:${PWD}/src/lib/libheif/install/lib/pkgconfig" && \
 			emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 && \
 			emmake make install
 
@@ -86,6 +91,40 @@ src/lib/libjpeg/install/lib/libjpeg.a: src/lib/libjpeg/source/configure src/lib/
 		emconfigure ./configure \
 			--disable-shared \
 			--prefix=${PWD}/src/lib/libjpeg/install && \
+		emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 CFLAGS="-O3" CXXFLAGS="-O3" && \
+		emmake make install
+
+src/lib/libheif/install/lib/libheif.a: src/lib/libde265/install/lib/libde265.a
+	export MACOSX_DEPLOYMENT_TARGET="10.14.1"; \
+	export PKG_CONFIG_PATH="${PWD}/src/lib/libde265/install/lib/pkgconfig"; \
+	export CFLAGS="-I${PWD}/src/lib/libde265/install/include -O3"; \
+	export CXXLAGS="-I${PWD}/src/lib/libde265/install/include -O3"; \
+	export CPPLAGS="-I${PWD}/src/lib/libde265/install/include -O3"; \
+	export LDFLAGS="-L${PWD}/src/lib/libde265/install/lib "; \
+	cd src/lib/libheif/source && \
+		git checkout v1.12.0 && \
+		./autogen.sh && \
+    	emconfigure ./configure \
+    		--disable-shared \
+    		--disable-multithreading \
+    		--disable-go \
+    		--disable-examples \
+    		--prefix=${PWD}/src/lib/libheif/install \
+			PKG_CONFIG_PATH="${PWD}/src/lib/libde265/install/lib/pkgconfig" \
+			libde265_CFLAGS="-I${PWD}/src/lib/libde265/install/include" \
+			libde265_LIBS="-L${PWD}/src/lib/libde265/install/lib" && \
+		emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 CFLAGS="-O3" CXXFLAGS="-O3" && \
+		emmake make install
+
+src/lib/libde265/install/lib/libde265.a: src/lib/libde265/source/CMakeLists.txt src/lib/gsl/gsl.mjs
+	cd src/lib/libde265/source && \
+		git checkout v1.0.8 && \
+		./autogen.sh && \
+		emconfigure ./configure \
+			--disable-shared \
+			--disable-dec265 \
+			--disable-sherlock265 \
+			--prefix=${PWD}/src/lib/libde265/install && \
 		emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 CFLAGS="-O3" CXXFLAGS="-O3" && \
 		emmake make install
 
@@ -143,6 +182,18 @@ clean-openjpeg:
 	rm -rf .git/modules/src/lib/openjpeg/source;
 	git config --remove-section submodule.src/lib/openjpeg/source || true;
 	git submodule add https://github.com/uclouvain/openjpeg.git src/lib/openjpeg/source;
+
+clean-libheif:
+	git rm -rf src/lib/libheif/source || true;
+	rm -rf .git/modules/src/lib/libheif/source;
+	git config --remove-section submodule.src/lib/libheif/source || true;
+	git submodule add https://github.com/strukturag/libheif.git src/lib/libheif/source;
+
+clean-libde265:
+	git rm -rf src/lib/libde265/source || true;
+	rm -rf .git/modules/src/lib/libde265/source;
+	git config --remove-section submodule.src/lib/libde265/source || true;
+	git submodule add https://github.com/strukturag/libde265.git src/lib/libde265/source;
 
 clean-imagemagick:
 	git rm -f src/lib/imagemagick/source || true;
