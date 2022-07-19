@@ -5,6 +5,7 @@ src/lib/imagemagick/imagemagick.mjs: src/lib/imagemagick/interface.o src/lib/ima
 		  src/lib/libjpeg/install/lib/libjpeg.a \
 		  src/lib/libpng/install/lib/libpng.a \
 		  src/lib/zlib/install/lib/libz.a \
+		  src/lib/openjpeg/install/lib/libopenjp2.a \
 		  -o src/lib/imagemagick/imagemagick.mjs \
 		  -s ENVIRONMENT='web' \
 		  -s SINGLE_FILE=1 \
@@ -30,7 +31,7 @@ src/lib/imagemagick/interface.o: src/lib/imagemagick/imagemagick.o
  		  -I./src/lib/libjpeg/install/include \
  		  -O3
 
-src/lib/imagemagick/imagemagick.o: src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a src/lib/libjpeg/install/lib/libjpeg.a
+src/lib/imagemagick/imagemagick.o: src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a
 	emcc -c src/lib/imagemagick/imagemagick.c \
  		  -o src/lib/imagemagick/imagemagick.o \
  		  -DMAGICKCORE_HDRI_ENABLE=0 \
@@ -39,10 +40,10 @@ src/lib/imagemagick/imagemagick.o: src/lib/imagemagick/install/lib/libMagickCore
  		  -I./src/lib/libjpeg/install/include \
  		  -O3
 
-src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a: src/lib/libjpeg/install/lib/libjpeg.a src/lib/libpng/install/lib/libpng.a src/lib/imagemagick/source/configure
-	export PKG_CONFIG_PATH=${PWD}/src/lib/imagemagick/install/lib/pkgconfig/:${PWD}/src/lib/libjpeg/install/lib/pkgconfig/:${PWD}/src/lib/libpng/install/lib/pkgconfig/:${PWD}/src/lib/zlib/install/lib/pkgconfig/; \
-	export CFLAGS="-I${PWD}/src/lib/libjpeg/install/include/ -I${PWD}/src/lib/libpng/install/include/ -I${PWD}/src/lib/zlib/install/include/ -O3"; \
-	export LDFLAGS="-L${PWD}/src/lib/libjpeg/install/lib/ -L${PWD}/src/lib/libpng/install/lib/ -L${PWD}/src/lib/zlib/install/lib/"; \
+src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a: src/lib/libjpeg/install/lib/libjpeg.a src/lib/libpng/install/lib/libpng.a src/lib/openjpeg/install/lib/libopenjp2.a src/lib/imagemagick/source/configure
+	export PKG_CONFIG_PATH=${PWD}/src/lib/imagemagick/install/lib/pkgconfig/:${PWD}/src/lib/libjpeg/install/lib/pkgconfig/:${PWD}/src/lib/libpng/install/lib/pkgconfig/:${PWD}/src/lib/zlib/install/lib/pkgconfig/:${PWD}/src/lib/openjpeg/install/lib/pkgconfig/; \
+	export CFLAGS="-I${PWD}/src/lib/libjpeg/install/include/ -I${PWD}/src/lib/libpng/install/include/ -I${PWD}/src/lib/zlib/install/include/ -I${PWD}/src/lib/openjpeg/install/include/ -O3"; \
+	export LDFLAGS="-L${PWD}/src/lib/libjpeg/install/lib/ -L${PWD}/src/lib/libpng/install/lib/ -L${PWD}/src/lib/zlib/install/lib/ -L${PWD}/src/lib/openjpeg/install/lib/"; \
 		cd src/lib/imagemagick/source; \
 			emconfigure ./configure \
 			--disable-shared \
@@ -53,7 +54,7 @@ src/lib/imagemagick/install/lib/libMagickCore-7.Q16.a: src/lib/libjpeg/install/l
 			--enable-hdri=no \
 			--without-magick-plus-plus \
 			--prefix=${PWD}/src/lib/imagemagick/install \
-			PKG_CONFIG_PATH="${PWD}/src/lib/imagemagick/install/lib/pkgconfig/:${PWD}/src/lib/libjpeg/install/lib/pkgconfig/:${PWD}/src/lib/libpng/install/lib/pkgconfig/:${PWD}/src/lib/zlib/install/lib/pkgconfig/" && \
+			PKG_CONFIG_PATH="${PWD}/src/lib/imagemagick/install/lib/pkgconfig/:${PWD}/src/lib/libjpeg/install/lib/pkgconfig/:${PWD}/src/lib/libpng/install/lib/pkgconfig/:${PWD}/src/lib/zlib/install/lib/pkgconfig/:${PWD}/src/lib/openjpeg/install/lib/pkgconfig/" && \
 			emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 && \
 			emmake make install
 
@@ -85,6 +86,16 @@ src/lib/libjpeg/install/lib/libjpeg.a: src/lib/libjpeg/source/configure src/lib/
 		emconfigure ./configure \
 			--disable-shared \
 			--prefix=${PWD}/src/lib/libjpeg/install && \
+		emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 CFLAGS="-O3" CXXFLAGS="-O3" && \
+		emmake make install
+
+src/lib/openjpeg/install/lib/libopenjp2.a: src/lib/openjpeg/source/CMakeLists.txt
+	cd src/lib/openjpeg/source && \
+		git checkout v2.5.0 && \
+		mkdir build && \
+		cd build && \
+		emcmake cmake .. -DCMAKE_BUILD_TYPE=Release \
+		 	  -DCMAKE_INSTALL_PREFIX=${PWD}/src/lib/openjpeg/install && \
 		emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 CFLAGS="-O3" CXXFLAGS="-O3" && \
 		emmake make install
 
@@ -126,6 +137,12 @@ clean-libpng:
 	rm -rf .git/modules/src/lib/libpng/source;
 	git config --remove-section submodule.src/lib/libpng/source || true;
 	git submodule add git://git.code.sf.net/p/libpng/code src/lib/libpng/source;
+
+clean-openjpeg:
+	git rm -rf src/lib/openjpeg/source || true;
+	rm -rf .git/modules/src/lib/openjpeg/source;
+	git config --remove-section submodule.src/lib/openjpeg/source || true;
+	git submodule add https://github.com/uclouvain/openjpeg.git src/lib/openjpeg/source;
 
 clean-imagemagick:
 	git rm -f src/lib/imagemagick/source || true;
