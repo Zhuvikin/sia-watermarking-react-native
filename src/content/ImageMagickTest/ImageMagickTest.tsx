@@ -17,7 +17,8 @@ export const ImageMagickTest = ({ imageMagickModule, imgBase64 }: ImageMagickTes
     console.log('image', image);
 
     return <div>
-        <h3>Image details:</h3>
+        <h3>Image details</h3>
+        <p>Format: {image.format}</p>
         <p>Dimensions: {image.width} x {image.height}</p>
         <p>Depth: {image.depth} bits</p>
         <p>Color Space: {colorspaceName}</p>

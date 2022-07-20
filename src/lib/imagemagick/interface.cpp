@@ -16,6 +16,7 @@ public:
     int colorspace;
     int depth;
     int channels;
+    std::string format;
 
     int number_channels;
     int number_meta_channels;
@@ -41,6 +42,10 @@ ImageDetails::ImageDetails(std::string imgBase64) {
     height = image->rows;
     colorspace = image->colorspace;
     depth = image->depth;
+
+    const char* end = std::find(image->magick, image->magick + sizeof(image->magick), '\0');
+    format.resize(end - image->magick);
+    std::copy(image->magick, image->magick + (end - image->magick), begin(format));
 
     number_channels = image->number_channels;
     number_meta_channels = image->number_meta_channels;
@@ -79,6 +84,7 @@ EMSCRIPTEN_BINDINGS(imagemagick) {
                 .property("height", &ImageDetails::height)
                 .property("colorspace", &ImageDetails::colorspace)
                 .property("depth", &ImageDetails::depth)
+                .property("format", &ImageDetails::format)
                 .property("channels", &ImageDetails::depth)
                 .property("number_channels", &ImageDetails::number_channels)
                 .property("number_meta_channels", &ImageDetails::number_meta_channels)

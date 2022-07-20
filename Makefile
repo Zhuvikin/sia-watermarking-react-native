@@ -156,12 +156,16 @@ src/lib/libde265/install/lib/libde265.a: src/lib/libde265/source/CMakeLists.txt 
 src/lib/openjpeg/install/lib/libopenjp2.a: src/lib/openjpeg/source/CMakeLists.txt
 	cd src/lib/openjpeg/source && \
 		git checkout v2.5.0 && \
-		mkdir build && \
+		rm -rf build && mkdir build && \
 		cd build && \
 		emcmake cmake .. -DCMAKE_BUILD_TYPE=Release \
+			  -DBUILD_SHARED_LIBS:bool=off \
+			  -DBUILD_CODEC:bool=off \
 		 	  -DCMAKE_INSTALL_PREFIX=${PWD}/src/lib/openjpeg/install && \
 		emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 CFLAGS="-O3" CXXFLAGS="-O3" && \
-		emmake make install
+		emmake make install && \
+		cd .. && \
+		rm -rf build
 
 src/lib/libtiff/install/lib/libtiff.a: src/lib/libtiff/source/CMakeLists.txt
 	cd src/lib/libtiff/source; \

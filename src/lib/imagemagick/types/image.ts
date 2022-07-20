@@ -5,6 +5,7 @@ export type BaseImage = {
     height: number,
     colorspace: Colorspace,
     depth: number,
+    format: string,
     channels: number,
 
     number_channels: number,

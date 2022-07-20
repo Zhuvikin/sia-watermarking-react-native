@@ -27,6 +27,7 @@ export const initImageMagick = async (): Promise<ImageMagick> => {
                     width: imageDetails.width,
                     height: imageDetails.height,
                     depth: imageDetails.depth,
+                    format: imageDetails.format,
                     colorspace: imageDetails.colorspace,
                     channels: imageDetails.channels,
                     number_channels: imageDetails.number_channels,
