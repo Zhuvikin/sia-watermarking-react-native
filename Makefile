@@ -167,7 +167,7 @@ src/lib/openjpeg/install/lib/libopenjp2.a: src/lib/openjpeg/source/CMakeLists.tx
 		 	  -DCMAKE_INSTALL_PREFIX=${PWD}/src/lib/openjpeg/install && \
 		emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 CFLAGS="-Oz" CXXFLAGS="-Oz" && \
 		emmake make install && \
-		rm src/lib/openjp2/CMakeFiles/openjp2.dir/compiler_depend.ts
+		rm src/lib/openjp2/CMakeFiles/openjp2.dir/compiler_depend.ts || true
 
 src/lib/libtiff/install/lib/libtiff.a: src/lib/libtiff/source/CMakeLists.txt
 	cd src/lib/libtiff/source; \
