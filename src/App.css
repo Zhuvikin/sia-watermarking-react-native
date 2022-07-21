@@ -22,6 +22,10 @@
 }
 
 canvas {
-  background-image: url('./content/ImageMagickTest/Canvas/chess.jpg');
+  background-image: url('./content/ImageLoad/Canvas/chess.jpg');
   background-size: cover;
+}
+
+.file-selector {
+  margin-bottom: 1rem;
 }
