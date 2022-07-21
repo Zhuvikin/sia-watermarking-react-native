@@ -1,25 +1,25 @@
 import React, {useEffect, useState} from "react";
 import {GSL, initGSL} from "../lib/gsl";
-import {ImageMagick, initImageMagick} from "../lib/imagemagick";
+import {initImageMagick, ImageMagick} from "../lib/imagemagick";
 import {StepView} from "./StepView";
 import {GSLTest} from "./GSLTest/GSLTest";
 import {ImageLoad} from "./ImageLoad/ImageLoad";
+import {Module} from "../lib/module";
+
+function registerModule<T extends Module>(initModule: () => Promise<T>, setModule: React.Dispatch<React.SetStateAction<T | undefined>>) {
+    initModule().then((module: T) => {
+        setModule(() => module);
+    });
+}
 
 export default () => {
-    const [gslModule, setGSLModule] : [GSL | undefined, React.Dispatch<React.SetStateAction<GSL | undefined>>] = useState();
-    const [imageMagickModule, setImageMagickModule] : [ImageMagick | undefined, React.Dispatch<React.SetStateAction<ImageMagick | undefined>>] = useState();
+    const [gslModule, setGSLModule]: [GSL | undefined, React.Dispatch<React.SetStateAction<GSL | undefined>>] = useState();
+    const [imageMagickModule, setImageMagickModule]: [ImageMagick | undefined, React.Dispatch<React.SetStateAction<ImageMagick | undefined>>] = useState();
 
-    useEffect(
-        () => {
-            initImageMagick().then((Module : ImageMagick) => {
-                setImageMagickModule(() => Module);
-            });
-            initGSL().then((Module : GSL) => {
-                setGSLModule(() => Module);
-            });
-        },
-        []
-    );
+    useEffect(() => {
+        registerModule(initImageMagick, setImageMagickModule);
+        registerModule(initGSL, setGSLModule);
+    }, []);
 
     if (!gslModule || !imageMagickModule) {
         return (

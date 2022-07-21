@@ -1,10 +1,10 @@
 import createImageMagickModule from "./imagemagick.mjs";
 import {Image, ImageDetails} from "./types/image";
+import {Module} from "../module";
 
 export type ImageMagick = {
-    module: any;
     imageFromBase64: (imageBase64: string) => Image;
-};
+} & Module;
 
 const colorChannels = 4;
 const bytesPerQuantum = 1;

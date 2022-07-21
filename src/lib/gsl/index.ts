@@ -1,9 +1,9 @@
 import createGSLModule from "./gsl.mjs";
+import {Module} from "../module";
 
 export type GSL = {
-    module: any;
     besselJ0: any;
-};
+} & Module;
 
 export const initGSL = async (): Promise<GSL> => {
     const module = await createGSLModule();
