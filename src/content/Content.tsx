@@ -4,6 +4,7 @@ import { ImageMagick } from "../lib/imagemagick";
 import {StepView} from "./StepView";
 import {GSLTest} from "./GSLTest/GSLTest";
 import {ImageMagickTest} from "./ImageMagickTest/ImageMagickTest";
+import {ImageMagickLoad} from "./ImageMagickTest/ImageMagickLoad";
 
 type ContentProps = {
     gslModule: GSL
@@ -23,11 +24,8 @@ export const Content = ({ gslModule, imageMagickModule }: ContentProps) => <div 
     <StepView title="GNU Scientific Library" >
         <GSLTest gslModule={gslModule} />
     </StepView>
-    <StepView title="Image Magick Library - Test Color Image 8">
-        <ImageMagickTest imageMagickModule={imageMagickModule} imgBase64={testImage8Color} />
-    </StepView>
-    <StepView title="Image Magick Library - Test Gray Image 8">
-        <ImageMagickTest imageMagickModule={imageMagickModule} imgBase64={testImage8Gray} />
+    <StepView title="Load Image">
+        <ImageMagickLoad imageMagickModule={imageMagickModule}/>
     </StepView>
     <StepView title="Image Magick Library - Test Color Image 128">
         <ImageMagickTest imageMagickModule={imageMagickModule} imgBase64={testImage128Color} />

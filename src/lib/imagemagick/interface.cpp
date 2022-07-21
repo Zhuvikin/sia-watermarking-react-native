@@ -70,7 +70,6 @@ ImageDetails::ImageDetails(std::string imgBase64) {
 
     pixelsPointer = (unsigned int) pixels;
 
-    //delete[] pixels;
     free(decodedBlob);
     image = DestroyImage(image);
     imageInfo = DestroyImageInfo(imageInfo);

@@ -23,6 +23,8 @@ export const initImageMagick = async (): Promise<ImageMagick> => {
                 const outputHeap8Array = module.HEAPU8.subarray(imageDetails.pixelsPointer, endPointer);
                 const outputUInt8Array = new Uint8ClampedArray(outputHeap8Array);
 
+                module._free(imageDetails.pixelsPointer);
+
                 return {
                     width: imageDetails.width,
                     height: imageDetails.height,
@@ -34,6 +36,7 @@ export const initImageMagick = async (): Promise<ImageMagick> => {
                     number_meta_channels: imageDetails.number_meta_channels,
                     metacontent_extent: imageDetails.metacontent_extent,
                     pixels: outputUInt8Array,
+                    base64Data: base64,
                 }
             },
         });

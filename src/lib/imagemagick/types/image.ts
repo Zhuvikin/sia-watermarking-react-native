@@ -19,4 +19,5 @@ export type ImageDetails = BaseImage & {
 
 export type Image = BaseImage & {
     pixels: Uint8ClampedArray,
+    base64Data: string,
 }
