@@ -3,7 +3,7 @@ import {GSL, initGSL} from "../lib/gsl";
 import {initImageMagick, ImageMagick} from "../lib/imagemagick";
 import {StepView} from "./StepView";
 import {GSLTest} from "./GSLTest/GSLTest";
-import {ImageLoad} from "./ImageLoad/ImageLoad";
+import {ImagePreview} from "./ImageLoad/ImagePreview";
 import {Module} from "../lib/module";
 
 function registerModule<T extends Module>(initModule: () => Promise<T>, setModule: React.Dispatch<React.SetStateAction<T | undefined>>) {
@@ -32,7 +32,7 @@ export default () => {
             <GSLTest gslModule={gslModule}/>
         </StepView>
         <StepView title="Load Image">
-            <ImageLoad imageMagickModule={imageMagickModule}/>
+            <ImagePreview imageMagickModule={imageMagickModule}/>
         </StepView>
     </div>;
 };

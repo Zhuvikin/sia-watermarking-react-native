@@ -9,7 +9,7 @@ type ImageMagickLoadProps = {
     imageMagickModule: ImageMagick
 };
 
-export const ImageLoad = ({imageMagickModule}: ImageMagickLoadProps) => {
+export const ImagePreview = ({imageMagickModule}: ImageMagickLoadProps) => {
     const inputFile = useRef() as MutableRefObject<HTMLInputElement>;
     const [file, setFile]: [File | undefined, React.Dispatch<React.SetStateAction<File | undefined>>] = useState();
     const [image, setImage]: [Image | undefined, React.Dispatch<React.SetStateAction<Image | undefined>>] = useState();
@@ -34,7 +34,6 @@ export const ImageLoad = ({imageMagickModule}: ImageMagickLoadProps) => {
     };
 
     if (isLoading) {
-        console.log('Loading...');
         return <div>Loading...</div>
     }
 
