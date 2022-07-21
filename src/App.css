@@ -1,31 +1,31 @@
 .App-logo {
-  height: 10vmin;
-  pointer-events: none;
-  display: inline-block;
-  vertical-align: middle;
+    height: 10vmin;
+    pointer-events: none;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .App-header {
-  background-color: #e3e3e3;
-  font-size: calc(10px + 2vmin);
-  color: rgb(95, 95, 95);
+    background-color: #e3e3e3;
+    font-size: calc(10px + 2vmin);
+    color: rgb(95, 95, 95);
 }
 
 .step-view {
-  padding: 1rem;
-  border: 1px dashed #5f5f5f;
-  margin: 1rem;
+    padding: 1rem;
+    border: 1px dashed #5f5f5f;
+    margin: 1rem;
 }
 
 .step-view > h2 {
-  margin-top: 0;
+    margin-top: 0;
 }
 
 canvas {
-  background-image: url('./content/ImageLoad/Canvas/chess.jpg');
-  background-size: cover;
+    background-image: url('./content/ImageLoad/Canvas/chess.jpg');
+    background-size: cover;
 }
 
 .file-selector {
-  margin-bottom: 1rem;
+    margin-bottom: 1rem;
 }

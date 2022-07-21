@@ -1,5 +1,5 @@
-import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
-import siaReducer from "../features/counter/siaSlice";
+import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
+import siaReducer from '../features/counter/siaSlice';
 
 export const store = configureStore({
   reducer: {

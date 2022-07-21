@@ -1,23 +1,23 @@
-import {Colorspace} from "./colorspace";
+import { Colorspace } from './colorspace';
 
 export type BaseImage = {
-    width: number,
-    height: number,
-    colorspace: Colorspace,
-    depth: number,
-    format: string,
-    channels: number,
+  width: number;
+  height: number;
+  colorspace: Colorspace;
+  depth: number;
+  format: string;
+  channels: number;
 
-    number_channels: number,
-    number_meta_channels: number,
-    metacontent_extent: number,
-}
+  number_channels: number;
+  number_meta_channels: number;
+  metacontent_extent: number;
+};
 
 export type ImageDetails = BaseImage & {
-    pixelsPointer: number,
-}
+  pixelsPointer: number;
+};
 
 export type Image = BaseImage & {
-    pixels: Uint8ClampedArray,
-    base64Data: string,
-}
+  pixels: Uint8ClampedArray;
+  base64Data: string;
+};

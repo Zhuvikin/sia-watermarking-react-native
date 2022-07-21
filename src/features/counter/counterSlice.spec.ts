@@ -1,7 +1,4 @@
-import counterReducer, {
-  CounterState,
-  incrementByAmount,
-} from './siaSlice';
+import counterReducer, { CounterState, incrementByAmount } from './siaSlice';
 
 describe('counter reducer', () => {
   const initialState: CounterState = {

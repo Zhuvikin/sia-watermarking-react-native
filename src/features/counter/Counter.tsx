@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 
-import {useAppDispatch, useAppSelector} from '../../app/hooks';
-import {incrementByAmount, selectCount} from './siaSlice';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { incrementByAmount, selectCount } from './siaSlice';
 import styles from './Counter.module.css';
 
 export function Counter() {
