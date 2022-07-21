@@ -1,29 +1,27 @@
 src/lib/imagemagick/imagemagick.mjs: src/lib/imagemagick/interface.o src/lib/imagemagick/imagemagick.o src/lib/libjpeg/install/lib/libjpeg.a
-	export PKG_CONFIG_PATH=${PWD}/src/lib/imagemagick/install/lib/pkgconfig:${PWD}/src/lib/libjpeg/install/lib/pkgconfig; \
-    	echo `src/lib/imagemagick/install/bin/MagickCore-config --cflags --cppflags --ldflags --libs` && \
-		em++ -Wall --bind src/lib/imagemagick/interface.o src/lib/imagemagick/imagemagick.o \
-		  src/lib/libjpeg/install/lib/libjpeg.a \
-		  src/lib/libpng/install/lib/libpng.a \
-		  src/lib/zlib/install/lib/libz.a \
-		  src/lib/openjpeg/install/lib/libopenjp2.a \
-		  src/lib/libheif/install/lib/libheif.a \
-		  src/lib/libde265/install/lib/libde265.a \
-		  src/lib/libtiff/install/lib/libtiff.a \
-		  -o src/lib/imagemagick/imagemagick.mjs \
-		  -s ENVIRONMENT='web' \
-		  -s SINGLE_FILE=1 \
-		  -s DISABLE_EXCEPTION_CATCHING=0 \
-		  -s ERROR_ON_UNDEFINED_SYMBOLS=0 \
-		  -s EXPORT_NAME='createImageMagickModule' \
-		  -s USE_ES6_IMPORT_META=0 \
-		  -s EXPORTED_FUNCTIONS='["_malloc", "_free"]' \
-		  -s EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
-		  -s ALLOW_MEMORY_GROWTH=1 \
-		  `src/lib/imagemagick/install/bin/MagickCore-config --cflags --cppflags --ldflags --libs` \
-		  -I./src/lib/libjpeg/install/include \
-		  -I./src/lib/imagemagick \
-		  -L./src/lib/libjpeg/install/libs \
-		  -O3
+	em++ --no-entry -Wall --bind \
+	  src/lib/imagemagick/interface.o \
+	  src/lib/imagemagick/imagemagick.o \
+	  src/lib/libtiff/source/libtiff/*.o \
+	  src/lib/libjpeg/source/*.o \
+	  src/lib/libpng/source/**/*.o src/lib/libpng/source/*.o \
+	  src/lib/imagemagick/source/**/*.o \
+	  src/lib/zlib/source/*.o \
+	  src/lib/openjpeg/source/build/src/lib/openjp2/CMakeFiles/openjp2.dir/*.c.o \
+	  src/lib/libheif/source/libheif/*.o \
+	  src/lib/libde265/source/**/*.o \
+	  -o src/lib/imagemagick/imagemagick.mjs \
+	  -s ENVIRONMENT='web' \
+	  -s SINGLE_FILE=1 \
+	  -s DISABLE_EXCEPTION_CATCHING=0 \
+	  -s EXPORT_NAME='createImageMagickModule' \
+	  -s USE_ES6_IMPORT_META=0 \
+	  -s EXPORTED_FUNCTIONS='["_malloc", "_free"]' \
+	  -s EXPORTED_RUNTIME_METHODS='["ccall", "cwrap"]' \
+	  -s ALLOW_MEMORY_GROWTH=1 \
+	  -DMAGICKCORE_HDRI_ENABLE=0 \
+	  -DMAGICKCORE_QUANTUM_DEPTH=16 \
+	  -O3
 
 src/lib/imagemagick/interface.o: src/lib/imagemagick/imagemagick.o
 	em++ -c src/lib/imagemagick/interface.cpp \
@@ -99,7 +97,8 @@ src/lib/libpng/install/lib/libpng.a: src/lib/libpng/source/CMakeLists.txt src/li
 			--disable-shared \
 			--prefix=${PWD}/src/lib/libpng/install && \
         emmake make -s BINARYEN_TRAP_MODE=clamp -s ALLOW_MEMORY_GROWTH=1 CFLAGS="-O3" CXXFLAGS="-O3" && \
-		emmake make install
+		emmake make install && \
+		rm pngtest.o
 
 src/lib/zlib/install/lib/libz.a: src/lib/zlib/source/CMakeLists.txt src/lib/gsl/gsl.mjs
 	cd src/lib/zlib/source && \
@@ -108,7 +107,8 @@ src/lib/zlib/install/lib/libz.a: src/lib/zlib/source/CMakeLists.txt src/lib/gsl/
 			--static \
 			--prefix=${PWD}/src/lib/zlib/install && \
         emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 CFLAGS="-O3" CXXFLAGS="-O3" && \
-		emmake make install
+		emmake make install && \
+		rm example.o example64.o minigzip.o minigzip64.o
 
 src/lib/libjpeg/install/lib/libjpeg.a: src/lib/libjpeg/source/configure src/lib/gsl/gsl.mjs
 	cd src/lib/libjpeg/source; \
@@ -117,9 +117,10 @@ src/lib/libjpeg/install/lib/libjpeg.a: src/lib/libjpeg/source/configure src/lib/
 			--disable-shared \
 			--prefix=${PWD}/src/lib/libjpeg/install && \
 		emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 CFLAGS="-O3" CXXFLAGS="-O3" && \
-		emmake make install
+		emmake make install && \
+		rm rdjpgcom.o wrjpgcom.o jpegtran.o djpeg.o cjpeg.o
 
-src/lib/libheif/install/lib/libheif.a: src/lib/libde265/install/lib/libde265.a
+src/lib/libheif/install/lib/libheif.a: src/lib/libheif/source/CMakeLists.txt src/lib/libde265/install/lib/libde265.a
 	export MACOSX_DEPLOYMENT_TARGET="10.14.1"; \
 	export PKG_CONFIG_PATH="${PWD}/src/lib/libde265/install/lib/pkgconfig"; \
 	export CFLAGS="-I${PWD}/src/lib/libde265/install/include -O3"; \
@@ -139,7 +140,8 @@ src/lib/libheif/install/lib/libheif.a: src/lib/libde265/install/lib/libde265.a
 			libde265_CFLAGS="-I${PWD}/src/lib/libde265/install/include" \
 			libde265_LIBS="-L${PWD}/src/lib/libde265/install/lib" && \
 		emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 CFLAGS="-O3" CXXFLAGS="-O3" && \
-		emmake make install
+		emmake make install && \
+		rm libheif/box_fuzzer.o libheif/color_conversion_fuzzer.o libheif/encoder_fuzzer.o libheif/file_fuzzer.o
 
 src/lib/libde265/install/lib/libde265.a: src/lib/libde265/source/CMakeLists.txt src/lib/gsl/gsl.mjs
 	cd src/lib/libde265/source && \
@@ -151,7 +153,8 @@ src/lib/libde265/install/lib/libde265.a: src/lib/libde265/source/CMakeLists.txt 
 			--disable-sherlock265 \
 			--prefix=${PWD}/src/lib/libde265/install && \
 		emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 CFLAGS="-O3" CXXFLAGS="-O3" && \
-		emmake make install
+		emmake make install && \
+		rm enc265/enc265-enc265.o tools/bjoentegaard-bjoentegaard.o tools/block_rate_estim-block-rate-estim.o tools/gen_enc_table-gen-entropy-table.o tools/rd_curves-rd-curves.o tools/tests-tests.o tools/yuv_distortion-yuv-distortion.o
 
 src/lib/openjpeg/install/lib/libopenjp2.a: src/lib/openjpeg/source/CMakeLists.txt
 	cd src/lib/openjpeg/source && \
@@ -164,8 +167,7 @@ src/lib/openjpeg/install/lib/libopenjp2.a: src/lib/openjpeg/source/CMakeLists.tx
 		 	  -DCMAKE_INSTALL_PREFIX=${PWD}/src/lib/openjpeg/install && \
 		emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 CFLAGS="-O3" CXXFLAGS="-O3" && \
 		emmake make install && \
-		cd .. && \
-		rm -rf build
+		rm src/lib/openjp2/CMakeFiles/openjp2.dir/compiler_depend.ts
 
 src/lib/libtiff/install/lib/libtiff.a: src/lib/libtiff/source/CMakeLists.txt
 	cd src/lib/libtiff/source; \
@@ -175,7 +177,8 @@ src/lib/libtiff/install/lib/libtiff.a: src/lib/libtiff/source/CMakeLists.txt
 			--disable-shared \
 			--prefix=${PWD}/src/lib/libtiff/install && \
 		emmake make BINARYEN_TRAP_MODE=clamp ALLOW_MEMORY_GROWTH=1 CFLAGS="-O3" CXXFLAGS="-O3" && \
-		emmake make install
+		emmake make install && \
+		rm libtiff/mkg3states.o
 
 src/lib/gsl/gsl.mjs: src/lib/gsl/source/.libs/libgsl.a
 	emcc --no-entry \
