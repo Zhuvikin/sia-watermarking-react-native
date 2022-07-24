@@ -1,79 +1,41 @@
-import { Image } from '../../lib/imagemagick/types/image';
-import React, { MutableRefObject, useRef, useState } from 'react';
-import { ImageMagick } from '../../lib/imagemagick';
+import React from 'react';
 import Canvas from './Canvas/Canvas';
-import download from 'downloadjs';
+import { downloadImage, getColorspaceName } from './utils';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
-  formatImageBase64Data,
-  formatImageFilename,
-  formatImageMime,
-  getColorspaceName,
-  toBase64,
-} from './utils';
+  loadImage,
+  resetImage,
+  selectImage,
+  selectIsImageLoaded,
+  selectIsImageSelected,
+} from '../../features/sia/siaSlice';
 
-type ImageMagickLoadProps = {
-  imageMagickModule: ImageMagick;
-};
+export const ImagePreview = () => {
+  const isImageSelected = useAppSelector(selectIsImageSelected);
+  const isImageLoaded = useAppSelector(selectIsImageLoaded);
+  const image = useAppSelector(selectImage);
+  const dispatch = useAppDispatch();
 
-export const ImagePreview = ({ imageMagickModule }: ImageMagickLoadProps) => {
-  const inputFile = useRef() as MutableRefObject<HTMLInputElement>;
-  const [file, setFile]: [
-    File | undefined,
-    React.Dispatch<React.SetStateAction<File | undefined>>,
-  ] = useState();
-  const [image, setImage]: [
-    Image | undefined,
-    React.Dispatch<React.SetStateAction<Image | undefined>>,
-  ] = useState();
-  const [isLoading, setLoading]: [
-    boolean,
-    React.Dispatch<React.SetStateAction<boolean>>,
-  ] = useState(false);
-
-  const changeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    let target = event.target;
-    const file = target.files![0];
-    setFile(file);
-    setLoading(true);
-
-    toBase64(file).then(base64 => {
-      const image = imageMagickModule.imageFromBase64(base64);
-      setImage(image);
-      setLoading(false);
-    });
-  };
-
-  const resetFile = () => {
-    setFile(undefined);
-    setImage(undefined);
-  };
-
-  if (isLoading) {
+  if (isImageSelected && !isImageLoaded) {
     return <div>Loading...</div>;
   }
-
-  const saveFile = () => {
-    if (image) {
-      let data = formatImageBase64Data(image.base64Data, image.format);
-      let filename = formatImageFilename(image.format);
-      let mimeType = formatImageMime(image.format);
-      download(data, filename, mimeType);
-    }
-  };
 
   return (
     <div>
       <div className="file-selector">
-        <input type="file" ref={inputFile} onChange={changeHandler} />
-        {file && (
-          <button type="button" onClick={resetFile}>
-            Reset
-          </button>
-        )}
-        {file && (
-          <button type="button" onClick={saveFile}>
-            Save
-          </button>
+        <input
+          type="file"
+          onChange={e => dispatch(loadImage(e.target.files![0]))}
+        />
+        {isImageSelected && isImageLoaded && image && (
+          <>
+            <button type="button" onClick={() => dispatch(resetImage())}>
+              Reset
+            </button>
+            <button type="button" onClick={() => downloadImage(image)}>
+              Save
+            </button>
+          </>
         )}
       </div>
       {image && (

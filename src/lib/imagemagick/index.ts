@@ -9,10 +9,12 @@ export type ImageMagick = {
 const colorChannels = 4;
 const bytesPerQuantum = 1;
 
-export const initImageMagick = async (): Promise<ImageMagick> => {
+export let imageMagickModule: ImageMagick;
+
+const initImageMagick = async (): Promise<ImageMagick> => {
   const module = await createImageMagickModule();
   return new Promise<ImageMagick>((resolve, reject) => {
-    resolve({
+    const result = {
       module,
       imageFromBase64: (base64: string): Image => {
         const imageDetails: ImageDetails = new module.ImageDetails(base64);
@@ -40,10 +42,22 @@ export const initImageMagick = async (): Promise<ImageMagick> => {
           number_channels: imageDetails.number_channels,
           number_meta_channels: imageDetails.number_meta_channels,
           metacontent_extent: imageDetails.metacontent_extent,
-          pixels: outputUInt8Array,
+          pixels: Array.from(outputUInt8Array),
           base64Data: base64,
         };
       },
-    });
+    };
+    imageMagickModule = result;
+    resolve(result);
   });
+};
+
+export const getImageMagick = async (): Promise<ImageMagick> => {
+  if (imageMagickModule) {
+    return new Promise<ImageMagick>((resolve, reject) => {
+      resolve(imageMagickModule);
+    });
+  } else {
+    return initImageMagick();
+  }
 };

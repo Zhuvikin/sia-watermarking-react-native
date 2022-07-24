@@ -255,7 +255,11 @@ clean-gsl:
 	git config --remove-section submodule.src/lib/gsl/source || true;
 	git submodule add git://git.savannah.gnu.org/gsl.git src/lib/gsl/source;
 
-clean-im:
+clean-im-mjs:
 	rm src/lib/imagemagick/imagemagick.mjs || true; \
 		rm src/lib/imagemagick/interface.o || true; \
 		rm src/lib/imagemagick/imagemagick.o || true
+
+clean-gsl-mjs:
+	rm src/lib/gsl/gsl.mjs || true; \
+		rm src/lib/gsl/gsl.o || true;

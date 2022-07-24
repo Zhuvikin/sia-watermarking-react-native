@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { GSL, initGSL } from '../lib/gsl';
-import { ImageMagick, initImageMagick } from '../lib/imagemagick';
+import { getGnuScientificLibrary, GnuScientificLibrary } from '../lib/gsl';
+import { getImageMagick, ImageMagick } from '../lib/imagemagick';
 import { StepView } from './StepView';
 import { GSLTest } from './GSLTest/GSLTest';
 import { ImagePreview } from './ImageLoad/ImagePreview';
 import { Module } from '../lib/module';
 
 function registerModule<T extends Module>(
-  initModule: () => Promise<T>,
+  getModule: () => Promise<T>,
   setModule: React.Dispatch<React.SetStateAction<T | undefined>>,
 ) {
-  initModule().then((module: T) => {
+  getModule().then((module: T) => {
     setModule(() => module);
   });
 }
 
 export default () => {
   const [gslModule, setGSLModule]: [
-    GSL | undefined,
-    React.Dispatch<React.SetStateAction<GSL | undefined>>,
+    GnuScientificLibrary | undefined,
+    React.Dispatch<React.SetStateAction<GnuScientificLibrary | undefined>>,
   ] = useState();
   const [imageMagickModule, setImageMagickModule]: [
     ImageMagick | undefined,
@@ -26,8 +26,8 @@ export default () => {
   ] = useState();
 
   useEffect(() => {
-    registerModule(initImageMagick, setImageMagickModule);
-    registerModule(initGSL, setGSLModule);
+    registerModule(getImageMagick, setImageMagickModule);
+    registerModule(getGnuScientificLibrary, setGSLModule);
   }, []);
 
   if (!gslModule || !imageMagickModule) {
@@ -37,10 +37,10 @@ export default () => {
   return (
     <div className="content">
       <StepView title="GNU Scientific Library">
-        <GSLTest gslModule={gslModule} />
+        <GSLTest />
       </StepView>
       <StepView title="Load Image">
-        <ImagePreview imageMagickModule={imageMagickModule} />
+        <ImagePreview />
       </StepView>
     </div>
   );

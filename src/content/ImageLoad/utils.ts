@@ -1,5 +1,6 @@
 import { Colorspace } from '../../lib/imagemagick/types/colorspace';
 import { Image } from '../../lib/imagemagick/types/image';
+import download from 'downloadjs';
 
 const removeMime = /^data:image\/[a-zA-Z0-9]+;base64,/;
 
@@ -32,4 +33,11 @@ export const getColorspaceName = (image: Image) => {
     colorspaceName = colorspaceName.replaceAll('Colorspace', '');
   }
   return colorspaceName;
+};
+
+export const downloadImage = (image: Image) => {
+  const data = formatImageBase64Data(image.base64Data, image.format);
+  const filename = formatImageFilename(image.format);
+  const mimeType = formatImageMime(image.format);
+  download(data, filename, mimeType);
 };

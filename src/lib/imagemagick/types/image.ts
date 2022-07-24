@@ -18,6 +18,6 @@ export type ImageDetails = BaseImage & {
 };
 
 export type Image = BaseImage & {
-  pixels: Uint8ClampedArray;
+  pixels: number[];
   base64Data: string;
 };
