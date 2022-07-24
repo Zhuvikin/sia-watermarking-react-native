@@ -5,6 +5,9 @@ import { StepView } from './StepView';
 import { GSLTest } from './GSLTest/GSLTest';
 import { ImagePreview } from './ImageLoad/ImagePreview';
 import { Module } from '../lib/module';
+import { WaveletDecomposition } from './WaveletDecomposition/WaveletDecomposition';
+import { useAppSelector } from '../store/hooks';
+import { selectImage } from '../features/image/imageSlice';
 
 function registerModule<T extends Module>(
   getModule: () => Promise<T>,
@@ -25,10 +28,12 @@ export default () => {
     React.Dispatch<React.SetStateAction<ImageMagick | undefined>>,
   ] = useState();
 
+  const image = useAppSelector(selectImage);
+
   useEffect(() => {
     registerModule(getImageMagick, setImageMagickModule);
     registerModule(getGnuScientificLibrary, setGSLModule);
-  }, []);
+  }, [image]);
 
   if (!gslModule || !imageMagickModule) {
     return <div className="App">Loading webassembly...</div>;
@@ -42,6 +47,11 @@ export default () => {
       <StepView title="Load Image">
         <ImagePreview />
       </StepView>
+      {image && (
+        <StepView title="Wavelet Decomposition">
+          <WaveletDecomposition />
+        </StepView>
+      )}
     </div>
   );
 };

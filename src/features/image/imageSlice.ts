@@ -8,14 +8,14 @@ import { Image } from '../../lib/imagemagick/types/image';
 import { toBase64 } from '../../content/ImageLoad/utils';
 import { getImageMagick } from '../../lib/imagemagick';
 
-export interface SiaState {
+export interface ImageState {
   image: Image | undefined;
   isLoaded: boolean;
   isSelected: boolean;
   error: SerializedError | undefined;
 }
 
-export const initialState: SiaState = {
+export const initialState: ImageState = {
   image: undefined,
   isLoaded: false,
   isSelected: false,
@@ -31,8 +31,8 @@ export const loadImage = createAsyncThunk<Image, File, { state: RootState }>(
   },
 );
 
-export const siaSlice = createSlice({
-  name: 'sia',
+export const imageSlice = createSlice({
+  name: 'image',
   initialState,
   reducers: {
     resetImage: state => {
@@ -65,10 +65,11 @@ export const siaSlice = createSlice({
   },
 });
 
-export const { resetImage } = siaSlice.actions;
+export const { resetImage } = imageSlice.actions;
 
-export const selectImage = (state: RootState) => state.sia.image;
-export const selectIsImageLoaded = (state: RootState) => state.sia.isLoaded;
-export const selectIsImageSelected = (state: RootState) => state.sia.isSelected;
+export const selectImage = (state: RootState) => state.image.image;
+export const selectIsImageLoaded = (state: RootState) => state.image.isLoaded;
+export const selectIsImageSelected = (state: RootState) =>
+  state.image.isSelected;
 
-export default siaSlice.reducer;
+export default imageSlice.reducer;

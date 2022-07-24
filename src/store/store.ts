@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
-import siaReducer from '../features/sia/siaSlice';
 import modulesReducer from '../features/modules/modulesSlice';
+import imageReducer from '../features/image/imageSlice';
+import waveletReducer from '../features/wavelet/waveletSlice';
 
 export const store = configureStore({
   reducer: {
-    sia: siaReducer,
     modules: modulesReducer,
+    image: imageReducer,
+    wavelet: waveletReducer,
   },
 });
 

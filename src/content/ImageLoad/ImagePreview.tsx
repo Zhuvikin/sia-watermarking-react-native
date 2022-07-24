@@ -8,7 +8,7 @@ import {
   selectImage,
   selectIsImageLoaded,
   selectIsImageSelected,
-} from '../../features/sia/siaSlice';
+} from '../../features/image/imageSlice';
 
 export const ImagePreview = () => {
   const isImageSelected = useAppSelector(selectIsImageSelected);

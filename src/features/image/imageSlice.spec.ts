@@ -1,4 +1,8 @@
-import siaReducer, { initialState, loadImage, SiaState } from './siaSlice';
+import imageReducer, {
+  initialState,
+  loadImage,
+  ImageState,
+} from './imageSlice';
 import { Image } from '../../lib/imagemagick/types/image';
 import { Colorspace } from '../../lib/imagemagick/types/colorspace';
 import {
@@ -52,14 +56,14 @@ export async function dataUrlToFile(
 
 describe('sia reducer', () => {
   it('should handle initial state', () => {
-    expect(siaReducer(undefined, { type: 'unknown' })).toEqual({
+    expect(imageReducer(undefined, { type: 'unknown' })).toEqual({
       image: undefined,
       isLoaded: false,
     });
   });
 
   test('should handle loadImage.fulfilled', () => {
-    const actual = siaReducer(initialState, {
+    const actual = imageReducer(initialState, {
       type: loadImage.fulfilled,
       payload: testImage,
     });
@@ -78,9 +82,9 @@ describe('sia reducer', () => {
     await store.dispatch(loadImage(file));
 
     const state = store.getState();
-    expect(state.sia).toEqual({
+    expect(state.image).toEqual({
       image: testImage,
       isLoaded: true,
-    } as SiaState);
+    } as ImageState);
   });
 });
