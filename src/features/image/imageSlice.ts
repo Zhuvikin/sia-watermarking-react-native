@@ -1,12 +1,14 @@
 import {
   createAsyncThunk,
   createSlice,
+  Dispatch,
   SerializedError,
 } from '@reduxjs/toolkit';
 import { RootState } from '../../store/store';
 import { Image } from '../../lib/imagemagick/types/image';
 import { toBase64 } from '../../content/ImageLoad/utils';
 import { getImageMagick } from '../../lib/imagemagick';
+import { resetWavelet } from '../wavelet/waveletSlice';
 
 export interface ImageState {
   image: Image | undefined;
@@ -25,6 +27,7 @@ export const initialState: ImageState = {
 export const loadImage = createAsyncThunk<Image, File, { state: RootState }>(
   'load/openImage',
   async (file: File, thunkAPI) => {
+    thunkAPI.dispatch(resetWavelet());
     const base64EncodedImage = await toBase64(file);
     const imageMagick = await getImageMagick();
     return imageMagick.imageFromBase64(base64EncodedImage);
@@ -66,6 +69,11 @@ export const imageSlice = createSlice({
 });
 
 export const { resetImage } = imageSlice.actions;
+
+export const resetAll = (dispatch: Dispatch) => {
+  dispatch(resetImage());
+  dispatch(resetWavelet());
+};
 
 export const selectImage = (state: RootState) => state.image.image;
 export const selectIsImageLoaded = (state: RootState) => state.image.isLoaded;

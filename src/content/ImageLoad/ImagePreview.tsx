@@ -4,7 +4,7 @@ import { downloadImage, getColorspaceName } from './utils';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   loadImage,
-  resetImage,
+  resetAll,
   selectImage,
   selectIsImageLoaded,
   selectIsImageSelected,
@@ -29,7 +29,7 @@ export const ImagePreview = () => {
         />
         {isImageSelected && isImageLoaded && image && (
           <>
-            <button type="button" onClick={() => dispatch(resetImage())}>
+            <button type="button" onClick={() => resetAll(dispatch)}>
               Reset
             </button>
             <button type="button" onClick={() => downloadImage(image)}>

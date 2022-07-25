@@ -5,6 +5,7 @@ import {
   selectDecomposition,
   waveletDecompose,
 } from '../../features/wavelet/waveletSlice';
+import Canvas from '../ImageLoad/Canvas/Canvas';
 
 export const WaveletDecomposition = () => {
   const dispatch = useAppDispatch();
@@ -22,13 +23,16 @@ export const WaveletDecomposition = () => {
       </div>
     );
   }
-  const { besselJ0, numbers } = decomposition;
+  const { besselJ0, numbers, dwtImage } = decomposition;
   return (
     <div>
       <div>Decomposition</div>
       <div>Bessel J0: {besselJ0}</div>
       <div>
         2 * [{sourceNumbers.toString()}] = [{numbers.toString()}]
+      </div>
+      <div>
+        <Canvas image={dwtImage} />
       </div>
     </div>
   );
