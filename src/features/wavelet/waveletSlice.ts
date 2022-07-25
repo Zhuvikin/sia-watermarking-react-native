@@ -2,9 +2,14 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getGnuScientificLibrary } from '../../lib/gsl';
 import { RootState } from '../../store/store';
 
+export type Decomposition = {
+  besselJ0: number;
+  numbers: number[];
+};
+
 export interface WaveletState {
   isDecomposed: boolean;
-  decomposition: number | undefined;
+  decomposition: Decomposition | undefined;
 }
 
 export const initialState: WaveletState = {
@@ -14,9 +19,13 @@ export const initialState: WaveletState = {
 
 export const waveletDecompose = createAsyncThunk(
   'wavelet/decompose',
-  async (arg: number) => {
+  async (numbers: number[]) => {
     const gnuScientificLibrary = await getGnuScientificLibrary();
-    return gnuScientificLibrary.besselJ0(arg);
+    const besselJ0 = gnuScientificLibrary.besselJ0(numbers[1]);
+    return {
+      besselJ0,
+      numbers: gnuScientificLibrary.doubleNumbers(numbers),
+    };
   },
 );
 
