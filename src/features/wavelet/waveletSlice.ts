@@ -2,17 +2,21 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getGnuScientificLibrary } from '../../lib/gsl';
 import { Image } from '../../lib/imagemagick/types/image';
 import { RootState } from '../../store/store';
+import { DwtDirection } from '../../lib/gsl/types/wavelet';
 
 export type Decomposition = {
   besselJ0: number;
   numbers: number[];
   dwtImage: Image;
+  restoredImage: Image;
 };
 
 export interface WaveletState {
   isDecomposed: boolean;
   decomposition: Decomposition | undefined;
 }
+
+const DWT_LEVELS = 3;
 
 export const initialState: WaveletState = {
   isDecomposed: false,
@@ -29,12 +33,23 @@ export const waveletDecompose = createAsyncThunk(
 
     const imageState = state.image;
     const image = imageState.image as Image;
-    const dwtImage = await gnuScientificLibrary.dwtForward(image);
+    const dwtImage = await gnuScientificLibrary.dwt(
+      image,
+      DwtDirection.Forward,
+      DWT_LEVELS,
+    );
+
+    const restoredImage = await gnuScientificLibrary.dwt(
+      image,
+      DwtDirection.Inverse,
+      DWT_LEVELS,
+    );
 
     return {
       besselJ0,
       numbers: gnuScientificLibrary.doubleNumbers(numbers),
       dwtImage,
+      restoredImage,
     };
   },
 );

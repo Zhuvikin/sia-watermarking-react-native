@@ -1,11 +1,12 @@
 import createGSLModule from './gsl.mjs';
 import { Module } from '../module';
 import { Image } from '../imagemagick/types/image';
+import { DwtDirection } from './types/wavelet';
 
 export type GnuScientificLibrary = {
   besselJ0: (argument: number) => number;
   doubleNumbers: (array: number[]) => number[];
-  dwtForward: (image: Image) => Image;
+  dwt: (image: Image, direction: DwtDirection, levels: number) => Image;
 } & Module;
 
 export let gnuScientificLibraryModule: GnuScientificLibrary;
@@ -16,11 +17,13 @@ const initGnuScientificLibrary = async (): Promise<GnuScientificLibrary> => {
     'number',
     'number',
   ]);
-  const dwtForward = module.cwrap('dwt_forward', null, [
-    'number',
-    'number',
-    'number',
-    'number',
+  const dwt = module.cwrap('dwt', null, [
+    'number', // input pointer
+    'number', // output pointer
+    'number', // width
+    'number', // height
+    'number', // forward = 0, inverse = 1
+    'number', // levels
   ]);
   const doubleNumbers = module.cwrap('double_numbers', null, [
     'number',
@@ -30,10 +33,12 @@ const initGnuScientificLibrary = async (): Promise<GnuScientificLibrary> => {
   ]);
 
   return new Promise<GnuScientificLibrary>((resolve, reject) => {
-    const dwtForwardOneChannel = (
+    const dwtOneChannel = (
       source: number[],
       width: number,
       height: number,
+      direction: DwtDirection,
+      levels: number,
     ): number[] => {
       const inputFloat64Array = new Float64Array(source);
       const inputUInt8Array = new Uint8Array(inputFloat64Array.buffer);
@@ -43,7 +48,8 @@ const initGnuScientificLibrary = async (): Promise<GnuScientificLibrary> => {
       module.HEAPU8.set(inputUInt8Array, inputPtr);
 
       const outputPtr = module._malloc(inputFloat64Array.byteLength);
-      dwtForward(inputPtr, outputPtr, width, height);
+
+      dwt(inputPtr, outputPtr, width, height, direction, levels);
       module._free(inputPtr);
 
       const outputHeap8Array = module.HEAPU8.subarray(
@@ -80,29 +86,29 @@ const initGnuScientificLibrary = async (): Promise<GnuScientificLibrary> => {
         const outputFloat64Array = new Float64Array(outputUInt8Array.buffer);
         return Array.from(outputFloat64Array);
       },
-      dwtForward: (image: Image) => {
-        const redChannel = [];
-        const greenChannel = [];
-        const blueChannel = [];
+      dwt: (image: Image, direction: DwtDirection, levels: number) => {
+        const inputRedChannel = [];
+        const inputGreenChannel = [];
+        const inputBlueChannel = [];
         for (let i = 0; i < image.pixels.length; i = i + 4) {
-          redChannel.push(image.pixels[i]);
-          greenChannel.push(image.pixels[i + 1]);
-          blueChannel.push(image.pixels[i + 2]);
+          inputRedChannel.push(image.pixels[i]);
+          inputGreenChannel.push(image.pixels[i + 1]);
+          inputBlueChannel.push(image.pixels[i + 2]);
         }
 
-        const [redCoefficients, greenCoefficients, blueCoefficients] = [
-          redChannel,
-          greenChannel,
-          blueChannel,
+        const [outputRedData, outputGreenData, outputBlueData] = [
+          inputRedChannel,
+          inputGreenChannel,
+          inputBlueChannel,
         ].map(channel =>
-          dwtForwardOneChannel(channel, image.width, image.height),
+          dwtOneChannel(channel, image.width, image.height, direction, levels),
         );
 
         const outPixels = [...image.pixels];
-        for (let i = 0; i < redCoefficients.length; i++) {
-          outPixels[4 * i] = redCoefficients[i];
-          outPixels[4 * i + 1] = greenCoefficients[i];
-          outPixels[4 * i + 2] = blueCoefficients[i];
+        for (let i = 0; i < outputRedData.length; i++) {
+          outPixels[4 * i] = outputRedData[i];
+          outPixels[4 * i + 1] = outputGreenData[i];
+          outPixels[4 * i + 2] = outputBlueData[i];
         }
         return {
           ...image,

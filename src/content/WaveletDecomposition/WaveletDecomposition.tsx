@@ -23,7 +23,7 @@ export const WaveletDecomposition = () => {
       </div>
     );
   }
-  const { besselJ0, numbers, dwtImage } = decomposition;
+  const { besselJ0, numbers, dwtImage, restoredImage } = decomposition;
   return (
     <div>
       <div>Decomposition</div>
@@ -33,6 +33,9 @@ export const WaveletDecomposition = () => {
       </div>
       <div>
         <Canvas image={dwtImage} />
+      </div>
+      <div>
+        <Canvas image={restoredImage} />
       </div>
     </div>
   );
