@@ -5,8 +5,6 @@ import { RootState } from '../../store/store';
 import { DwtDirection } from '../../lib/gsl/types/wavelet';
 
 export type Decomposition = {
-  besselJ0: number;
-  numbers: number[];
   dwtImage: Image;
   restoredImage: Image;
 };
@@ -27,27 +25,24 @@ export const waveletDecompose = createAsyncThunk(
   'wavelet/decompose',
   async (numbers: number[], thunkAPI) => {
     const gnuScientificLibrary = await getGnuScientificLibrary();
-    const besselJ0 = gnuScientificLibrary.besselJ0(numbers[1]);
 
     const state = thunkAPI.getState() as RootState;
 
     const imageState = state.image;
     const image = imageState.image as Image;
-    const dwtImage = await gnuScientificLibrary.dwt(
+    const dwtImage = gnuScientificLibrary.dwt(
       image,
       DwtDirection.Forward,
       DWT_LEVELS,
     );
 
-    const restoredImage = await gnuScientificLibrary.dwt(
-      image,
+    const restoredImage = gnuScientificLibrary.dwt(
+      dwtImage,
       DwtDirection.Inverse,
       DWT_LEVELS,
     );
 
     return {
-      besselJ0,
-      numbers: gnuScientificLibrary.doubleNumbers(numbers),
       dwtImage,
       restoredImage,
     };

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { getGnuScientificLibrary, GnuScientificLibrary } from '../lib/gsl';
 import { getImageMagick, ImageMagick } from '../lib/imagemagick';
 import { StepView } from './StepView';
-import { GSLTest } from './GSLTest/GSLTest';
 import { ImagePreview } from './ImageLoad/ImagePreview';
 import { Module } from '../lib/module';
 import { WaveletDecomposition } from './WaveletDecomposition/WaveletDecomposition';
@@ -41,9 +40,6 @@ export default () => {
 
   return (
     <div className="content">
-      <StepView title="GNU Scientific Library">
-        <GSLTest />
-      </StepView>
       <StepView title="Load Image">
         <ImagePreview />
       </StepView>

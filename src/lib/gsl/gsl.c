@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <math.h>
 #include <config.h>
-#include <gsl/gsl_sf_bessel.h>
 #include <gsl/gsl_wavelet2d.h>
 
 #define ELEMENT(a,stride,i) ((a)[(stride)*(i)])
@@ -92,10 +92,6 @@ static void dwt_step (const gsl_wavelet * w, double *a, size_t stride, size_t n,
     }
 }
 
-EMSCRIPTEN_KEEPALIVE double _gsl_sf_bessel_J0(double x) {
-    return gsl_sf_bessel_J0(x);
-}
-
 int gsl_wavelet2d_nstransform_up_to_levels(const gsl_wavelet * w,
                            double *data, size_t tda, size_t size1,
                            size_t size2, gsl_wavelet_direction dir,
@@ -117,7 +113,7 @@ int gsl_wavelet2d_nstransform_up_to_levels(const gsl_wavelet * w,
     int level = 1;
     if (dir == gsl_wavelet_forward) {
         for (i = size1; i >= 2 && level <= levels; i >>= 1) {
-            printf("level = %d\n", level);
+            //printf("level = %d\n", level);
             for (j = 0; j < i; j++) {      /* for every row j */
                 dwt_step (w, &ELEMENT(data, tda, j), 1, i, dir, work);
             }
@@ -127,8 +123,9 @@ int gsl_wavelet2d_nstransform_up_to_levels(const gsl_wavelet * w,
             level++;
         }
     } else {
-        for (i = 2; i <= size1 && level <= levels; i <<= 1) {
-            printf("inverse level = %d\n", level);
+        //printf("start from = %d\n", (int) (size1 / pow(2, levels - 1)));
+        for (i = (int) (size1 / pow(2, levels - 1)); i <= size1 && level <= levels; i <<= 1) {
+            //printf("inverse level = %d\n", level);
             for (j = 0; j < i; j++) {     /* for every column j */
                 dwt_step (w, &ELEMENT(data, 1, j), tda, i, dir, work);
             }
@@ -194,20 +191,12 @@ EMSCRIPTEN_KEEPALIVE void dwt(const double *inPtr, double *outPtr, const int wid
 
     for (i = 0; i < width; i++) {
         for (j = 0; j < height; j++) {
+            double x1 = gsl_matrix_get (m1, i, j );
             double x2 = gsl_matrix_get (m2, i, j );
+            // printf("(%lu, %lu): %f -> %f\n", i, j, x1, x2);
             outPtr[i + width * j] = x2;
         }
     }
-
-    //gsl_wavelet2d_nstransform_matrix_inverse (w, m2, work);
-    //
-    //for (i = 0; i < N; i++) {
-    //    for (j = 0; j < N; j++) {
-    //        double x1 = gsl_matrix_get (m1, i, j);
-    //        double x2 = gsl_matrix_get (m2, i, j );
-    //        printf("inv (%lu, %lu): %f -> %f\n", i, j, x1, x2);
-    //    }
-    //}
 
     free (data);
     gsl_wavelet_workspace_free (work);
@@ -215,17 +204,3 @@ EMSCRIPTEN_KEEPALIVE void dwt(const double *inPtr, double *outPtr, const int wid
     gsl_matrix_free (m2);
     return;
 }
-
-// EMSCRIPTEN_KEEPALIVE double gsl_wavelet2d_transform_inverse(double x)
-// {
-//     return gsl_wavelet2d_transform_inverse(x);
-// }
-
-EMSCRIPTEN_KEEPALIVE void double_numbers(const double *inPtr, const int inLength, double *outPtr, const int outLength) {
-    int i;
-    for (i = 0; i < outLength; i++)
-    {
-        outPtr[i] = 2 * inPtr[i];
-    }
-}
-

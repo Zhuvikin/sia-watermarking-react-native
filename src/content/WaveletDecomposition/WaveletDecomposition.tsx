@@ -23,14 +23,10 @@ export const WaveletDecomposition = () => {
       </div>
     );
   }
-  const { besselJ0, numbers, dwtImage, restoredImage } = decomposition;
+  const { dwtImage, restoredImage } = decomposition;
   return (
     <div>
       <div>Decomposition</div>
-      <div>Bessel J0: {besselJ0}</div>
-      <div>
-        2 * [{sourceNumbers.toString()}] = [{numbers.toString()}]
-      </div>
       <div>
         <Canvas image={dwtImage} />
       </div>
