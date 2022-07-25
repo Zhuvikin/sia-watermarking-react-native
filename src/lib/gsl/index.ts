@@ -53,6 +53,13 @@ const initGnuScientificLibrary = async (): Promise<GnuScientificLibrary> => {
     const result = {
       module,
       dwt: (image: Image, direction: DwtDirection, levels: number) => {
+        const markStart = 'mark_start';
+        const markChannelsSeparated = 'mark_channels_separated';
+        const markDwtPerformed = 'mark_dwt_performed';
+        const markChannelsCombined = 'mark_channels_combined';
+
+        performance.mark(markStart);
+
         const inputRedChannel = [];
         const inputGreenChannel = [];
         const inputBlueChannel = [];
@@ -61,6 +68,7 @@ const initGnuScientificLibrary = async (): Promise<GnuScientificLibrary> => {
           inputGreenChannel.push(image.pixels[i + 1]);
           inputBlueChannel.push(image.pixels[i + 2]);
         }
+        performance.mark(markChannelsSeparated);
 
         const [outputRedData, outputGreenData, outputBlueData] = [
           inputRedChannel,
@@ -70,12 +78,33 @@ const initGnuScientificLibrary = async (): Promise<GnuScientificLibrary> => {
           dwtOneChannel(channel, image.width, image.height, direction, levels),
         );
 
+        performance.mark(markDwtPerformed);
+
         const outPixels = [...image.pixels];
         for (let i = 0; i < outputRedData.length; i++) {
           outPixels[4 * i] = outputRedData[i];
           outPixels[4 * i + 1] = outputGreenData[i];
           outPixels[4 * i + 2] = outputBlueData[i];
         }
+        performance.mark(markChannelsCombined);
+
+        performance.measure(
+          'measure channels separation',
+          markStart,
+          markChannelsSeparated,
+        );
+        performance.measure(
+          'measure DWT',
+          markChannelsSeparated,
+          markDwtPerformed,
+        );
+        performance.measure(
+          'measure channels composition',
+          markDwtPerformed,
+          markChannelsCombined,
+        );
+        console.log(performance.getEntriesByType('measure'));
+
         return {
           ...image,
           pixels: outPixels,
