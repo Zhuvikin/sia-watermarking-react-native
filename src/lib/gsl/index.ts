@@ -54,60 +54,39 @@ const initGnuScientificLibrary = async (): Promise<GnuScientificLibrary> => {
       module,
       dwt: (image: Image, direction: DwtDirection, levels: number) => {
         const markStart = 'mark_start';
-        const markChannelsSeparated = 'mark_channels_separated';
         const markDwtPerformed = 'mark_dwt_performed';
-        const markChannelsCombined = 'mark_channels_combined';
 
         performance.mark(markStart);
 
-        const inputRedChannel = [];
-        const inputGreenChannel = [];
-        const inputBlueChannel = [];
-        for (let i = 0; i < image.pixels.length; i = i + 4) {
-          inputRedChannel.push(image.pixels[i]);
-          inputGreenChannel.push(image.pixels[i + 1]);
-          inputBlueChannel.push(image.pixels[i + 2]);
-        }
-        performance.mark(markChannelsSeparated);
-
-        const [outputRedData, outputGreenData, outputBlueData] = [
-          inputRedChannel,
-          inputGreenChannel,
-          inputBlueChannel,
+        const [outputRedChannel, outputGreenChannel, outputBlueChannel] = [
+          image.redChannel,
+          image.greenChannel,
+          image.blueChannel,
         ].map(channel =>
           dwtOneChannel(channel, image.width, image.height, direction, levels),
         );
 
         performance.mark(markDwtPerformed);
-
-        const outPixels = [...image.pixels];
-        for (let i = 0; i < outputRedData.length; i++) {
-          outPixels[4 * i] = outputRedData[i];
-          outPixels[4 * i + 1] = outputGreenData[i];
-          outPixels[4 * i + 2] = outputBlueData[i];
-        }
-        performance.mark(markChannelsCombined);
-
-        performance.measure(
-          'measure channels separation',
-          markStart,
-          markChannelsSeparated,
-        );
-        performance.measure(
-          'measure DWT',
-          markChannelsSeparated,
-          markDwtPerformed,
-        );
-        performance.measure(
-          'measure channels composition',
-          markDwtPerformed,
-          markChannelsCombined,
-        );
+        performance.measure('measure DWT', markStart, markDwtPerformed);
         console.log(performance.getEntriesByType('measure'));
 
         return {
-          ...image,
-          pixels: outPixels,
+          width: image.width,
+          height: image.height,
+          depth: image.depth,
+          format: image.format,
+          colorspace: image.colorspace,
+          channels: image.channels,
+          number_channels: image.number_channels,
+          number_meta_channels: image.number_meta_channels,
+          metacontent_extent: image.metacontent_extent,
+
+          redChannel: outputRedChannel,
+          greenChannel: outputGreenChannel,
+          blueChannel: outputBlueChannel,
+          alphaChannel: image.alphaChannel,
+
+          base64Data: image.base64Data,
         };
       },
     };

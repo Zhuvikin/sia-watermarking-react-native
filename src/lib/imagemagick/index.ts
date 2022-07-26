@@ -32,6 +32,18 @@ const initImageMagick = async (): Promise<ImageMagick> => {
 
         module._free(imageDetails.pixelsPointer);
 
+        const amountOfPixels = outputUInt8Array.length / 4;
+        const redChannel = new Array(amountOfPixels);
+        const greenChannel = new Array(amountOfPixels);
+        const blueChannel = new Array(amountOfPixels);
+        const alphaChannel = new Array(amountOfPixels);
+        for (let i = 0; i < amountOfPixels; i++) {
+          redChannel[i] = outputUInt8Array[4 * i];
+          greenChannel[i] = outputUInt8Array[4 * i + 1];
+          blueChannel[i] = outputUInt8Array[4 * i + 2];
+          alphaChannel[i] = outputUInt8Array[4 * i + 3];
+        }
+
         return {
           width: imageDetails.width,
           height: imageDetails.height,
@@ -42,7 +54,12 @@ const initImageMagick = async (): Promise<ImageMagick> => {
           number_channels: imageDetails.number_channels,
           number_meta_channels: imageDetails.number_meta_channels,
           metacontent_extent: imageDetails.metacontent_extent,
-          pixels: Array.from(outputUInt8Array),
+
+          redChannel,
+          greenChannel,
+          blueChannel,
+          alphaChannel,
+
           base64Data: base64,
         };
       },

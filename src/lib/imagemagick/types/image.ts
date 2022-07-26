@@ -18,6 +18,9 @@ export type ImageDetails = BaseImage & {
 };
 
 export type Image = BaseImage & {
-  pixels: number[];
+  redChannel: number[];
+  greenChannel: number[];
+  blueChannel: number[];
+  alphaChannel: number[];
   base64Data: string;
 };
